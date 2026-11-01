@@ -1,0 +1,17 @@
+.payslip-view {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.payslip-view__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+@media print {
+  .payslip-view__bar {
+    display: none;
+  }
+}

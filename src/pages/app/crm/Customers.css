@@ -1,0 +1,15 @@
+.customers__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.customers__owes {
+  font-weight: 600;
+  color: #b45309;
+}

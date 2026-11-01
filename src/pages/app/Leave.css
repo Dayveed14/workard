@@ -1,0 +1,7 @@
+.leave__note {
+  font-size: 0.85rem;
+}
+
+.toolbar select.field__input {
+  min-width: 150px;
+}

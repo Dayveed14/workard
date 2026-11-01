@@ -1,0 +1,134 @@
+.inv-form {
+  max-width: 980px;
+}
+
+.inv-form__new-customer {
+  justify-self: start;
+  font-size: 0.85rem;
+}
+
+.inv-form__items {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inv-form__items th {
+  padding: 0 6px 8px;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.inv-form__items td {
+  padding: 4px 6px;
+  vertical-align: middle;
+}
+
+.inv-form__items td:first-child {
+  width: 50%;
+}
+
+.inv-form__items td:nth-child(2) {
+  width: 90px;
+}
+
+.inv-form__items td:nth-child(3) {
+  width: 160px;
+}
+
+.inv-form__items .field__input {
+  height: 42px;
+}
+
+.inv-form__line {
+  text-align: right;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.inv-form__add {
+  margin-top: 10px;
+}
+
+.inv-form__bottom {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--gray);
+}
+
+.inv-form__totals {
+  display: grid;
+  gap: 14px;
+}
+
+.inv-form__totals dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.inv-form__totals dt {
+  color: var(--muted);
+}
+
+.inv-form__totals dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 500;
+}
+
+.inv-form__grand {
+  padding-top: 8px;
+  border-top: 1px solid var(--gray);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700 !important;
+  color: var(--navy) !important;
+}
+
+.inv-form__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+@media (max-width: 760px) {
+  .inv-form__bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .inv-form__items thead {
+    display: none;
+  }
+
+  .inv-form__items tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 6px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gray);
+  }
+
+  .inv-form__items td:first-child {
+    grid-column: 1 / -1;
+    width: auto;
+  }
+
+  .inv-form__items td:nth-child(2),
+  .inv-form__items td:nth-child(3) {
+    width: auto;
+  }
+
+  .inv-form__line {
+    grid-column: 1 / 3;
+    text-align: left;
+  }
+}

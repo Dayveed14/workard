@@ -1,0 +1,12 @@
+.login__secure {
+  text-align: center;
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.login__forgot {
+  justify-self: end;
+  margin-top: -8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}

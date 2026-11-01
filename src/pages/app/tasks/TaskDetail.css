@@ -1,0 +1,178 @@
+.task-detail__bar {
+  margin-bottom: 14px;
+}
+
+.task-detail__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 18px;
+  align-items: start;
+}
+
+.task-detail__main,
+.task-detail__side {
+  display: grid;
+  gap: 18px;
+}
+
+.task-detail__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.task-detail__title h1 {
+  font-size: 1.45rem;
+  margin: 0;
+}
+
+.task-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.task-detail__danger {
+  color: var(--danger);
+}
+
+.task-detail__description {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.task-detail__progress {
+  height: 4px;
+  background: var(--gray);
+}
+
+.task-detail__progress span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  transition: width 0.2s;
+}
+
+.task-detail__checklist,
+.task-detail__comments,
+.task-detail__files {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.task-detail__checklist li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 20px;
+}
+
+.task-detail__checklist label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.task-detail__checklist input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+}
+
+.task-detail__checklist li.is-done span {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.task-detail__add {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px 18px;
+  border-top: 1px solid var(--gray);
+}
+
+.task-detail__add--comment {
+  align-items: flex-end;
+}
+
+.task-detail__comments li {
+  display: flex;
+  gap: 12px;
+  padding: 10px 20px;
+}
+
+.task-detail__comments p {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.task-detail__comments .muted {
+  font-size: 0.8rem;
+}
+
+.task-detail__comment-body {
+  margin-top: 2px !important;
+  white-space: pre-wrap;
+}
+
+.task-detail__facts {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 12px 10px;
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.task-detail__facts dt {
+  color: var(--muted);
+}
+
+.task-detail__facts dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.task-detail__person {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-detail__due--overdue {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.task-detail__due--today {
+  color: var(--amber);
+  font-weight: 600;
+}
+
+.task-detail__files li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 20px;
+  font-size: 0.9rem;
+}
+
+.task-detail__files a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .task-detail__layout {
+    grid-template-columns: 1fr;
+  }
+}

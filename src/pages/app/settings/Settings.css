@@ -1,0 +1,274 @@
+.settings__narrow {
+  max-width: 640px;
+}
+
+.settings__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.settings__list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.settings__list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.settings__list li:last-child {
+  border-bottom: 0;
+}
+
+.settings__list-text {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+}
+
+.settings__list-text span {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.settings__inline {
+  display: flex;
+  gap: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--gray);
+}
+
+.settings__inline .field__input {
+  height: 40px;
+}
+
+.settings__helper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* ===== Branch cards ===== */
+.branch-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.branch-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px;
+}
+
+.branch-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.branch-card h3 {
+  font-size: 1.05rem;
+}
+
+.branch-card dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.branch-card dt {
+  color: var(--muted);
+}
+
+.branch-card dd {
+  margin: 0;
+}
+
+/* ===== Role editor ===== */
+.roles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.role-card {
+  display: grid;
+  gap: 10px;
+  padding: 18px 20px;
+  align-content: start;
+}
+
+.role-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.role-card h3 {
+  font-size: 1rem;
+}
+
+.role-card p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.role-card footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.perm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.perm-table th {
+  text-align: left;
+  padding: 14px 0 6px;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.perm-table td {
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.perm-table td:last-child {
+  width: 150px;
+  text-align: right;
+}
+
+.perm-table select {
+  height: 34px;
+  padding: 0 30px 0 10px;
+  font-size: 0.85rem;
+}
+
+.perm-table .form__check {
+  font-size: 0.9rem;
+}
+
+.audit-action {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  color: var(--blue-600);
+}
+
+@media (max-width: 860px) {
+  .settings__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Payroll settings ===== */
+.settings__title {
+  font-size: 1.05rem;
+}
+
+.settings__connected {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green-600);
+}
+
+.settings__steps {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 10px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.settings__copy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.settings__copy code {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+.settings__inline-form {
+  display: flex;
+  gap: 10px;
+}
+
+.settings__danger {
+  color: var(--danger);
+}
+
+/* ===== Review settings ===== */
+.settings__check-inline {
+  align-self: end;
+  min-height: 44px;
+}
+
+.settings__criterion {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(160px, 1.6fr) 96px 36px;
+  gap: 8px;
+  align-items: center;
+}
+
+.settings__weight {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+}
+
+.settings__total-ok {
+  color: var(--green-600);
+  font-weight: 600;
+}
+
+.settings__total-bad {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .settings__criterion {
+    grid-template-columns: 1fr 80px 36px;
+  }
+
+  .settings__criterion input[aria-label='Description'] {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+.settings__reviews {
+  max-width: 900px;
+}

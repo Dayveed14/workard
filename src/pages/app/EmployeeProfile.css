@@ -1,0 +1,137 @@
+.profile__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.profile__photo {
+  position: relative;
+}
+
+.profile__photo-btn {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+}
+
+.profile__who {
+  flex: 1;
+  min-width: 220px;
+}
+
+.profile__who h1 {
+  font-size: 1.5rem;
+}
+
+.profile__who p {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.profile__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.profile__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile__exit {
+  color: var(--danger);
+}
+
+.profile__details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 24px;
+  margin: 0;
+}
+
+.profile__details dt {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.profile__details dd {
+  margin: 4px 0 0;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.profile__docs {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.profile__docs li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.profile__docs li:last-child {
+  border-bottom: 0;
+}
+
+.profile__doc-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--blue-50);
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.profile__doc-text {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+}
+
+.profile__doc-text span {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.profile__modal-text {
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+@media (max-width: 860px) {
+  .profile__details {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .profile__details {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile__select {
+  width: auto;
+}

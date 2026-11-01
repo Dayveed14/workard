@@ -1,0 +1,40 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--logo-size) * 0.3);
+  line-height: 1;
+}
+
+.logo__mark {
+  width: calc(var(--logo-size) * 1.23);
+  height: var(--logo-size);
+  flex-shrink: 0;
+}
+
+.logo__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.logo__word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: calc(var(--logo-size) * 0.78);
+  letter-spacing: -0.02em;
+}
+
+.logo__tagline {
+  font-size: calc(var(--logo-size) * 0.32);
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.logo--dark .logo__word {
+  color: var(--navy);
+}
+
+.logo--light .logo__word,
+.logo--light .logo__tagline {
+  color: #fff;
+}

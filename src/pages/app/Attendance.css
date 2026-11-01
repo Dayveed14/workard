@@ -1,0 +1,107 @@
+.att__subheading {
+  margin: 28px 0 12px;
+  font-size: 1.1rem;
+}
+
+.att__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.att__toolbar .field__input {
+  width: auto;
+  height: 42px;
+}
+
+.att__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.att__chip {
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.att__chip--green {
+  background: var(--green-50);
+  color: #047857;
+}
+
+.att__chip--amber {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.att__chip--blue {
+  background: var(--blue-50);
+  color: var(--blue-600);
+}
+
+.att__chip--red {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.att__checks {
+  display: flex;
+  gap: 6px;
+}
+
+.att__checks span {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+}
+
+.att__checks .ok {
+  background: var(--green-50);
+  color: var(--green-600);
+}
+
+.att__checks .bad {
+  background: #fef2f2;
+  color: var(--danger);
+}
+
+.att__flagged {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.att__flagged li {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.att__flagged li:last-child {
+  border-bottom: 0;
+}
+
+.att__reason {
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+  .att__flagged li {
+    grid-template-columns: 1fr;
+  }
+
+  .att__flagged .row-actions {
+    justify-content: flex-start;
+  }
+}

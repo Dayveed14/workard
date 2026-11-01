@@ -1,0 +1,13 @@
+.tasks__repeat-bar {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tasks__repeat-bar p {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.tasks__paused td {
+  color: var(--muted);
+}

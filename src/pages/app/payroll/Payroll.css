@@ -1,0 +1,62 @@
+.payroll__start {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+.payroll__start h2 {
+  font-size: 1.1rem;
+}
+
+.payroll__start p {
+  margin-top: 4px;
+  max-width: 560px;
+  font-size: 0.92rem;
+}
+
+.payroll__start-form {
+  display: flex;
+  gap: 10px;
+}
+
+.payroll__start-form .field__input {
+  width: auto;
+  height: 44px;
+}
+
+.payroll__warning {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  font-size: 0.92rem;
+}
+
+.payroll__warning svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.payroll__warning a {
+  color: #b45309;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.payroll__cancelled td {
+  opacity: 0.55;
+}
+
+.payroll__cancelled + tr td,
+.table td .badge + .badge {
+  margin-left: 6px;
+}

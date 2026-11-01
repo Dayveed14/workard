@@ -1,0 +1,16 @@
+.task-modal__checklist {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.task-modal__check-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.task-modal__checklist .field__label {
+  width: 100%;
+}

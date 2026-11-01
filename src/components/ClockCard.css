@@ -1,0 +1,124 @@
+.clock-card {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 240px;
+  gap: 24px;
+  align-items: center;
+  padding: 22px 24px;
+  border-radius: var(--radius-lg);
+  background: radial-gradient(500px 220px at 100% 0%, rgba(37, 99, 235, 0.35), transparent 60%), var(--navy);
+  color: #fff;
+}
+
+.clock-card--loading {
+  min-height: 132px;
+  opacity: 0.6;
+}
+
+.clock-card__time {
+  display: grid;
+  gap: 2px;
+}
+
+.clock-card__time span,
+.clock-card__time small {
+  color: #94a3b8;
+  font-size: 0.88rem;
+}
+
+.clock-card__time strong {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  line-height: 1.1;
+}
+
+.clock-card__status p {
+  color: #cbd5e1;
+}
+
+.clock-card__status ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.clock-card__status li {
+  display: grid;
+  gap: 2px;
+}
+
+.clock-card__status li span {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.clock-card__status li strong {
+  font-size: 1.1rem;
+}
+
+.clock-card__late {
+  font-style: normal;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(217, 119, 6, 0.25);
+  color: #fcd34d;
+  vertical-align: middle;
+}
+
+.clock-card__flag {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(220, 38, 38, 0.18);
+  color: #fecaca !important;
+  font-size: 0.85rem;
+}
+
+.clock-card__flag svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.clock-card__action {
+  display: grid;
+  gap: 8px;
+}
+
+.clock-card__action .btn--outline {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.clock-card__checks {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.clock-card__checks span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.clock-card__done {
+  text-align: center;
+  color: #6ee7b7;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .clock-card {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}

@@ -1,0 +1,25 @@
+.month-att__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.month-att__top .field__input {
+  width: auto;
+  height: 42px;
+}
+
+.month-att__summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.month-att__summary strong {
+  color: var(--navy);
+  font-size: 1.05rem;
+}

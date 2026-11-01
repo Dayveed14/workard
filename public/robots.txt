@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /employees
+Disallow: /attendance
+Disallow: /leave
+Disallow: /settings
+Disallow: /invite/
+Disallow: /i/
+Disallow: /customers
+Disallow: /invoices
+Disallow: /finance
+Disallow: /payroll
+Disallow: /payslips
+Disallow: /tasks
+Disallow: /reviews
+Disallow: /api/
+
+Sitemap: https://workard.com/sitemap.xml

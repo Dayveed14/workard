@@ -1,0 +1,190 @@
+import { useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Check, MapPin, ShieldCheck, Wifi, X } from 'lucide-react';
+import PageHeader from '../../components/PageHeader.jsx';
+import Tabs from '../../components/Tabs.jsx';
+import ClockCard from '../../components/ClockCard.jsx';
+import MonthAttendance from '../../components/MonthAttendance.jsx';
+import Avatar from '../../components/Avatar.jsx';
+import Badge from '../../components/Badge.jsx';
+import EmptyState from '../../components/EmptyState.jsx';
+import ReviewModal from '../../components/ReviewModal.jsx';
+import { api } from '../../api/client.js';
+import { useApi } from '../../hooks/useApi.js';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { useToast } from '../../context/ToastContext.jsx';
+import { formatDate, formatTime, fullName, todayString } from '../../utils/format.js';
+import './Attendance.css';
+
+// Daily register for the people the viewer can see
+function Register() {
+  const [date, setDate] = useState(todayString());
+  const { data, loading, error } = useApi(`/api/attendance?date=${date}`);
+
+  return (
+    <>
+      <div className="att__toolbar">
+        <input type="date" className="field__input" value={date} max={todayString()} onChange={(e) => setDate(e.target.value)} aria-label="Date" />
+        {data && (
+          <div className="att__chips">
+            <span className="att__chip att__chip--green">{data.summary.present} present</span>
+            <span className="att__chip att__chip--amber">{data.summary.late} late</span>
+            <span className="att__chip att__chip--blue">{data.summary.onLeave} on leave</span>
+            <span className="att__chip att__chip--red">{data.summary.absent} absent</span>
+            {data.summary.flagged > 0 && <span className="att__chip att__chip--red">{data.summary.flagged} flagged</span>}
+          </div>
+        )}
+      </div>
+
+      <div className="card">
+        {loading && <div className="page-loader"><span className="page-loader__spinner" /></div>}
+        {error && <p className="card__body">{error}</p>}
+        {data && data.register.length === 0 && <EmptyState title="No employees to show" />}
+        {data && data.register.length > 0 && (
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr><th>Employee</th><th>Department</th><th>In</th><th>Out</th><th>Checks</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                {data.register.map((r) => (
+                  <tr key={r.employee_id}>
+                    <td>
+                      <Link to={`/employees/${r.employee_id}`} className="person">
+                        <Avatar name={fullName(r)} src={r.photo_url} size={32} />
+                        <span>
+                          <strong>{fullName(r)}</strong>
+                          <span>{r.job_title || '—'}</span>
+                        </span>
+                      </Link>
+                    </td>
+                    <td>{r.department_name || <span className="muted">—</span>}</td>
+                    <td>{formatTime(r.clock_in_at)}</td>
+                    <td>{formatTime(r.clock_out_at)}</td>
+                    <td>
+                      {r.attendance_id ? (
+                        <span className="att__checks">
+                          {r.location_ok !== null && (
+                            <span className={r.location_ok ? 'ok' : 'bad'} title={r.distance_m !== null ? `${r.distance_m} m from office` : 'No location'}>
+                              <MapPin size={14} />
+                            </span>
+                          )}
+                          {r.wifi_ok !== null && (
+                            <span className={r.wifi_ok ? 'ok' : 'bad'} title={`IP ${r.clock_in_ip}`}>
+                              <Wifi size={14} />
+                            </span>
+                          )}
+                          {r.location_ok === null && r.wifi_ok === null && <span className="muted">—</span>}
+                        </span>
+                      ) : (
+                        <span className="muted">—</span>
+                      )}
+                    </td>
+                    <td>
+                      <Badge status={r.status}>{r.status === 'on_leave' ? r.leave_type : undefined}</Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// Clock-ins that failed the location / Wi-Fi check
+function Flagged({ onReviewed }) {
+  const toast = useToast();
+  const { data, loading, reload } = useApi('/api/attendance/flagged');
+  const [review, setReview] = useState(null);
+
+  const submit = async ({ decision, note }) => {
+    try {
+      await api(`/api/attendance/${review.record.id}/review`, { method: 'PATCH', body: { decision, note } });
+      toast.success(decision === 'approved' ? 'Clock-in approved' : 'Clock-in rejected');
+      reload();
+      onReviewed?.();
+    } catch (err) {
+      toast.error(err.message);
+      throw err;
+    }
+  };
+
+  if (loading) return <div className="page-loader"><span className="page-loader__spinner" /></div>;
+  if (!data?.length) {
+    return (
+      <div className="card">
+        <EmptyState icon={ShieldCheck} title="Nothing to review" text="Clock-ins that fail the location or office Wi-Fi check will appear here." />
+      </div>
+    );
+  }
+
+  return (
+    <div className="card">
+      <ul className="att__flagged">
+        {data.map((r) => (
+          <li key={r.id}>
+            <div className="person">
+              <Avatar name={fullName(r)} size={36} />
+              <span>
+                <strong>{fullName(r)}</strong>
+                <span>{formatDate(r.work_date)} at {formatTime(r.clock_in_at)} · {r.branch_name || 'No branch'}</span>
+              </span>
+            </div>
+            <p className="att__reason">{r.flag_reason}</p>
+            <div className="row-actions">
+              <button type="button" className="btn btn--outline btn--sm" onClick={() => setReview({ record: r, decision: 'rejected' })}>
+                <X size={16} /> Reject
+              </button>
+              <button type="button" className="btn btn--success btn--sm" onClick={() => setReview({ record: r, decision: 'approved' })}>
+                <Check size={16} /> Approve
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+      {review && (
+        <ReviewModal
+          title={review.decision === 'approved' ? 'Approve clock-in' : 'Reject clock-in'}
+          decision={review.decision}
+          summary={`${fullName(review.record)} — ${review.record.flag_reason}`}
+          onSubmit={submit}
+          onClose={() => setReview(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+export default function Attendance() {
+  const { can, employee } = useAuth();
+  const [params, setParams] = useSearchParams();
+  const { data: flagged, reload: reloadFlagged } = useApi(can('attendance.review') ? '/api/attendance/flagged' : null);
+
+  const tabs = [
+    ...(employee ? [{ id: 'mine', label: 'My attendance' }] : []),
+    ...(can('attendance.view') ? [{ id: 'register', label: 'Daily register' }] : []),
+    ...(can('attendance.review') ? [{ id: 'flagged', label: 'Flagged', count: flagged?.length }] : []),
+  ];
+  const tab = tabs.some((t) => t.id === params.get('tab')) ? params.get('tab') : tabs[0]?.id;
+
+  return (
+    <>
+      <PageHeader title="Attendance" subtitle="Clock in and out, and see who’s at work." />
+      <Tabs tabs={tabs} active={tab} onChange={(id) => setParams({ tab: id })} />
+
+      {tab === 'mine' && (
+        <>
+          <ClockCard />
+          <h2 className="att__subheading">This month</h2>
+          <MonthAttendance basePath="/api/me/attendance" />
+        </>
+      )}
+      {tab === 'register' && <Register />}
+      {tab === 'flagged' && <Flagged onReviewed={reloadFlagged} />}
+      {!tabs.length && <EmptyState title="Your account isn’t linked to an employee profile" />}
+    </>
+  );
+}

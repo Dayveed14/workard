@@ -1,0 +1,17 @@
+.invoices__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.invoices__late {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .invoices__stats {
+    grid-template-columns: 1fr;
+  }
+}
