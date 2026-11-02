@@ -1,54 +1,86 @@
-.register__meter {
+.plan-pick {
+  margin: 0;
+  padding: 0;
+  border: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  margin-top: 4px;
+  gap: 8px;
 }
 
-.register__meter span {
-  height: 4px;
-  border-radius: 4px;
-  background: var(--gray);
-  transition: background 0.2s ease;
+.plan-pick legend {
+  margin-bottom: 8px;
 }
 
-.register__meter[data-score='1'] span:nth-child(-n + 1) {
-  background: var(--danger);
+.plan-pick__option {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.register__meter[data-score='2'] span:nth-child(-n + 2) {
-  background: var(--amber);
+.plan-pick__option:hover {
+  border-color: #94a3b8;
 }
 
-.register__meter[data-score='3'] span {
-  background: var(--green);
+.plan-pick__option.is-on {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-.register__rules {
-  list-style: none;
-  padding: 0;
-  margin: 2px 0 0;
+.plan-pick__option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.plan-pick__option:has(input:focus-visible) {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.plan-pick__name {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px 16px;
-  font-size: 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 0.9rem;
   color: var(--muted);
 }
 
-.register__rules li {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.plan-pick__option.is-on .plan-pick__name {
+  color: var(--blue-600);
 }
 
-.register__rules svg {
-  color: #cbd5e1;
+.plan-pick__option strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
 }
 
-.register__rules li.is-ok {
-  color: var(--green-600);
+.plan-pick__option small {
+  color: var(--muted);
+  font-size: 0.78rem;
 }
 
-.register__rules li.is-ok svg {
-  color: var(--green);
+.plan-pick__note {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+@media (max-width: 420px) {
+  .plan-pick {
+    grid-template-columns: 1fr;
+  }
+
+  .plan-pick__option {
+    grid-template-columns: 1fr auto auto;
+    align-items: baseline;
+    gap: 6px;
+  }
 }

@@ -57,7 +57,7 @@ export default function Navbar() {
                   Log in
                 </Link>
                 <Link to="/signup" className="btn btn--primary btn--block" onClick={() => setOpen(false)}>
-                  Get started free
+                  Get started
                 </Link>
               </>
             )}
@@ -75,7 +75,7 @@ export default function Navbar() {
                 Log in
               </NavLink>
               <Link to="/signup" className="btn btn--primary btn--sm">
-                Get started free
+                Get started
               </Link>
             </>
           )}

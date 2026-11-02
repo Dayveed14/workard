@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSeo } from './seo/useSeo.js';
-import ProtectedRoute, { GuestRoute, RequirePermission } from './components/ProtectedRoute.jsx';
+import ProtectedRoute, { GuestRoute, RequireFeature, RequirePermission } from './components/ProtectedRoute.jsx';
 import AppLayout from './components/AppLayout.jsx';
 
 // Public pages
@@ -34,6 +34,10 @@ import Tasks from './pages/app/tasks/Tasks.jsx';
 import TaskDetail from './pages/app/tasks/TaskDetail.jsx';
 import Reviews from './pages/app/reviews/Reviews.jsx';
 import ReviewDetail from './pages/app/reviews/ReviewDetail.jsx';
+import Billing from './pages/app/billing/Billing.jsx';
+import BillingCallback from './pages/app/billing/BillingCallback.jsx';
+import Onboarding from './pages/app/onboarding/Onboarding.jsx';
+import OnboardingDetail from './pages/app/onboarding/OnboardingDetail.jsx';
 
 export default function App() {
   useSeo();
@@ -72,25 +76,31 @@ export default function App() {
           />
 
           {/* Phase 2 */}
-          <Route path="/customers" element={<RequirePermission anyOf={['customers.view']}><Customers /></RequirePermission>} />
-          <Route path="/customers/:id" element={<RequirePermission anyOf={['customers.view']}><CustomerProfile /></RequirePermission>} />
-          <Route path="/invoices" element={<RequirePermission anyOf={['invoices.view']}><Invoices /></RequirePermission>} />
-          <Route path="/invoices/new" element={<RequirePermission anyOf={['invoices.manage']}><InvoiceForm /></RequirePermission>} />
-          <Route path="/invoices/:id" element={<RequirePermission anyOf={['invoices.view']}><InvoiceDetail /></RequirePermission>} />
-          <Route path="/invoices/:id/edit" element={<RequirePermission anyOf={['invoices.manage']}><InvoiceForm /></RequirePermission>} />
-          <Route path="/finance" element={<RequirePermission anyOf={['finance.view']}><Finance /></RequirePermission>} />
+          <Route path="/customers" element={<RequireFeature feature="crm"><RequirePermission anyOf={['customers.view']}><Customers /></RequirePermission></RequireFeature>} />
+          <Route path="/customers/:id" element={<RequireFeature feature="crm"><RequirePermission anyOf={['customers.view']}><CustomerProfile /></RequirePermission></RequireFeature>} />
+          <Route path="/invoices" element={<RequireFeature feature="invoices"><RequirePermission anyOf={['invoices.view']}><Invoices /></RequirePermission></RequireFeature>} />
+          <Route path="/invoices/new" element={<RequireFeature feature="invoices"><RequirePermission anyOf={['invoices.manage']}><InvoiceForm /></RequirePermission></RequireFeature>} />
+          <Route path="/invoices/:id" element={<RequireFeature feature="invoices"><RequirePermission anyOf={['invoices.view']}><InvoiceDetail /></RequirePermission></RequireFeature>} />
+          <Route path="/invoices/:id/edit" element={<RequireFeature feature="invoices"><RequirePermission anyOf={['invoices.manage']}><InvoiceForm /></RequirePermission></RequireFeature>} />
+          <Route path="/finance" element={<RequireFeature feature="finance"><RequirePermission anyOf={['finance.view']}><Finance /></RequirePermission></RequireFeature>} />
 
           {/* Phase 3 */}
-          <Route path="/payroll" element={<RequirePermission anyOf={['payroll.view']}><Payroll /></RequirePermission>} />
-          <Route path="/payroll/:id" element={<RequirePermission anyOf={['payroll.view']}><PayrollRun /></RequirePermission>} />
-          <Route path="/payslips" element={<MyPayslips />} />
-          <Route path="/payslips/:id" element={<PayslipView />} />
+          <Route path="/payroll" element={<RequireFeature feature="payroll"><RequirePermission anyOf={['payroll.view']}><Payroll /></RequirePermission></RequireFeature>} />
+          <Route path="/payroll/:id" element={<RequireFeature feature="payroll"><RequirePermission anyOf={['payroll.view']}><PayrollRun /></RequirePermission></RequireFeature>} />
+          <Route path="/payslips" element={<RequireFeature feature="payroll"><MyPayslips /></RequireFeature>} />
+          <Route path="/payslips/:id" element={<RequireFeature feature="payroll"><PayslipView /></RequireFeature>} />
+
+          {/* Plans & onboarding */}
+          <Route path="/billing" element={<Billing />} />
+          <Route path="/billing/callback" element={<BillingCallback />} />
+          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/onboarding/:id" element={<OnboardingDetail />} />
 
           {/* Phase 3B — everyone has their own tasks & reviews; access is checked by the API */}
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/tasks/:id" element={<TaskDetail />} />
-          <Route path="/reviews" element={<Reviews />} />
-          <Route path="/reviews/:id" element={<ReviewDetail />} />
+          <Route path="/tasks" element={<RequireFeature feature="tasks"><Tasks /></RequireFeature>} />
+          <Route path="/tasks/:id" element={<RequireFeature feature="tasks"><TaskDetail /></RequireFeature>} />
+          <Route path="/reviews" element={<RequireFeature feature="reviews"><Reviews /></RequireFeature>} />
+          <Route path="/reviews/:id" element={<RequireFeature feature="reviews"><ReviewDetail /></RequireFeature>} />
 
           <Route
             path="/settings"

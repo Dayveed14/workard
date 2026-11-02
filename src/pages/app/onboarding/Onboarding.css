@@ -1,0 +1,273 @@
+/* ===== Progress bar ===== */
+.ob-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ob-progress__bar {
+  width: 90px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--gray);
+  overflow: hidden;
+}
+
+.ob-progress__bar span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  transition: width 0.2s;
+}
+
+.ob-progress small {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.ob-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.ob-note {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 0.88rem;
+}
+
+/* ===== Checklists ===== */
+.ob-toolbar {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ob-toolbar p {
+  margin: 0;
+  max-width: 640px;
+  font-size: 0.92rem;
+}
+
+.ob-templates {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.ob-template {
+  display: grid;
+  gap: 10px;
+}
+
+.ob-template header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.ob-template h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.ob-template p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.ob-template__counts {
+  display: flex;
+  gap: 18px;
+  color: var(--muted);
+}
+
+.ob-template__counts strong {
+  color: var(--navy);
+}
+
+/* ===== Checklist editor ===== */
+.ob-editor__section {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.ob-editor__hint {
+  margin: -4px 0 4px;
+  font-size: 0.85rem;
+}
+
+.ob-editor__row {
+  display: grid;
+  grid-template-columns: 1fr 110px 36px;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.ob-editor__day {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ===== One person's onboarding ===== */
+.ob-detail__bar {
+  margin-bottom: 14px;
+}
+
+.ob-detail__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.ob-detail__head h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.ob-detail__head p {
+  margin: 4px 0 0;
+}
+
+.ob-detail__status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ob-cancel {
+  color: var(--danger);
+}
+
+.ob-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--blue-50);
+  border: 1px solid #bfdbfe;
+  color: var(--blue-600);
+  font-size: 0.92rem;
+}
+
+.ob-banner--green {
+  background: var(--green-50);
+  border-color: #a7f3d0;
+  color: #047857;
+}
+
+.ob-detail__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.ob-column .card__header {
+  align-items: center;
+}
+
+.ob-column .card__header h2 {
+  margin: 0;
+}
+
+.ob-items {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.ob-items li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 20px;
+}
+
+.ob-items label {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.ob-items input {
+  width: 19px;
+  height: 19px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--green);
+}
+
+.ob-items input:disabled {
+  cursor: not-allowed;
+}
+
+.ob-items label > span {
+  display: grid;
+  gap: 2px;
+}
+
+.ob-items small {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.ob-items li.is-done strong {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.ob-due--overdue {
+  color: var(--danger) !important;
+  font-weight: 600;
+}
+
+.ob-due--today {
+  color: var(--amber) !important;
+  font-weight: 600;
+}
+
+.ob-add {
+  display: grid;
+  grid-template-columns: 1fr 150px auto;
+  gap: 8px;
+  padding: 12px 20px 18px;
+  border-top: 1px solid var(--gray);
+}
+
+.ob-add-btn {
+  margin: 4px 20px 16px;
+}
+
+@media (max-width: 900px) {
+  .ob-detail__columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .ob-add {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-editor__row {
+    grid-template-columns: 1fr 90px 36px;
+  }
+}

@@ -14,6 +14,8 @@ Disallow: /payroll
 Disallow: /payslips
 Disallow: /tasks
 Disallow: /reviews
+Disallow: /billing
+Disallow: /onboarding
 Disallow: /api/
 
 Sitemap: https://workard.com/sitemap.xml

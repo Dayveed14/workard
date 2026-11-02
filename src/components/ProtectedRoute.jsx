@@ -1,5 +1,6 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { Lock } from 'lucide-react';
+import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Lock, Sparkles } from 'lucide-react';
+import { FEATURE_NAMES, FEATURE_PLAN, planById } from '../config/plans.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import EmptyState from './EmptyState.jsx';
 
@@ -12,13 +13,31 @@ function Loader() {
   );
 }
 
-// Logged-in users only
+// Logged-in users only. While the plan is unpaid or expired, only the billing pages open.
 export default function ProtectedRoute() {
-  const { status } = useAuth();
+  const { status, subscription } = useAuth();
   const location = useLocation();
   if (status === 'loading') return <Loader />;
   if (status === 'guest') return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  if (subscription && !subscription.usable && !location.pathname.startsWith('/billing')) {
+    return <Navigate to="/billing" replace />;
+  }
   return <Outlet />;
+}
+
+// Shows the page only if the organisation's plan includes this feature
+export function RequireFeature({ feature, children }) {
+  const { subscription, role } = useAuth();
+  if (subscription?.features.includes(feature)) return children;
+  const plan = planById(FEATURE_PLAN[feature]);
+  return (
+    <EmptyState
+      icon={Sparkles}
+      title={`${FEATURE_NAMES[feature]} is on the ${plan?.name} plan`}
+      text={`Your ${subscription?.planName} plan doesn’t include ${FEATURE_NAMES[feature].toLowerCase()}. ${role?.isOwner ? 'Upgrade any time — you only pay the difference for the rest of your year.' : 'Ask the owner to upgrade.'}`}
+      action={role?.isOwner && <Link to="/billing" className="btn btn--primary">See plans</Link>}
+    />
+  );
 }
 
 // Logged-out users only (login, sign up)

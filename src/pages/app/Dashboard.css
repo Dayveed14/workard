@@ -207,3 +207,49 @@
 .dash__review-due svg:last-child {
   margin-left: auto;
 }
+
+/* ===== Onboarding card ===== */
+.dash__onboarding {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 16px 20px;
+  border-color: #bfdbfe;
+  background: var(--blue-50);
+  color: var(--navy);
+}
+
+.dash__onboarding > span:nth-child(2) {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+}
+
+.dash__onboarding small {
+  color: var(--muted);
+}
+
+.dash__onboarding-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--blue);
+  color: #fff;
+}
+
+.dash__onboarding-bar {
+  height: 6px;
+  max-width: 320px;
+  border-radius: 999px;
+  background: #dbeafe;
+  overflow: hidden;
+}
+
+.dash__onboarding-bar span {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+}

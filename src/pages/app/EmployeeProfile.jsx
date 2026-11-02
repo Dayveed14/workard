@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Camera, Download, FileText, KeyRound, Mail, Pencil, Trash2, Upload, UserMinus } from 'lucide-react';
+import { UserPlus, Camera, Download, FileText, KeyRound, Mail, Pencil, Trash2, Upload, UserMinus } from 'lucide-react';
 import Avatar from '../../components/Avatar.jsx';
 import Badge from '../../components/Badge.jsx';
 import Tabs from '../../components/Tabs.jsx';
@@ -298,9 +298,10 @@ export default function EmployeeProfile() {
     { id: 'documents', label: 'Documents' },
   ];
   const isManager = auth.employee && e.manager_id === auth.employee.id;
-  if (isSelf || isManager || auth.can('tasks.view')) tabs.push({ id: 'tasks', label: 'Tasks' });
-  if (isSelf || isManager || auth.canAny('reviews.view', 'reviews.manage')) tabs.push({ id: 'reviews', label: 'Reviews' });
-  if (auth.can('payroll.view')) tabs.push({ id: 'pay', label: 'Pay' });
+  const has = (feature) => auth.subscription?.features.includes(feature);
+  if (has('tasks') && (isSelf || isManager || auth.can('tasks.view'))) tabs.push({ id: 'tasks', label: 'Tasks' });
+  if (has('reviews') && (isSelf || isManager || auth.canAny('reviews.view', 'reviews.manage'))) tabs.push({ id: 'reviews', label: 'Reviews' });
+  if (has('payroll') && auth.can('payroll.view')) tabs.push({ id: 'pay', label: 'Pay' });
 
   return (
     <>
@@ -334,6 +335,11 @@ export default function EmployeeProfile() {
         </div>
 
         <div className="profile__actions">
+          {auth.can('onboarding.manage') && active && !isSelf && (
+            <Link to={`/onboarding?start=${e.id}`} className="btn btn--outline btn--sm">
+              <UserPlus size={16} /> Start onboarding
+            </Link>
+          )}
           {canEdit && (
             <button type="button" className="btn btn--outline btn--sm" onClick={() => navigate(`/employees/${id}/edit`)}>
               <Pencil size={16} /> Edit
@@ -363,7 +369,7 @@ export default function EmployeeProfile() {
       {tab === 'leave' && <LeaveTab id={id} />}
       {tab === 'tasks' && <TasksTab id={id} firstName={e.first_name} />}
       {tab === 'reviews' && <ReviewsTab id={id} />}
-      {tab === 'pay' && auth.can('payroll.view') && <EmployeePayTab employeeId={id} />}
+      {tab === 'pay' && has('payroll') && auth.can('payroll.view') && <EmployeePayTab employeeId={id} />}
       {tab === 'documents' && <DocumentsTab id={id} canManage={auth.can('documents.manage') && active} />}
 
       {(modal === 'invite' || modal === 'role') && (

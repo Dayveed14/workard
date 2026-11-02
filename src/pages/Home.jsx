@@ -21,6 +21,8 @@ import {
   ListChecks,
 } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
+import { PLANS } from '../config/plans.js';
+import { formatMoney } from '../utils/format.js';
 import Footer from '../components/Footer.jsx';
 import Logo from '../components/Logo.jsx';
 import { faq } from '../data/homeContent.js';
@@ -103,33 +105,14 @@ const insights = [
   { tone: 'info', icon: UserCheck, text: '42 of 48 employees are at work right now.', action: 'Register' },
 ];
 
-const plans = [
-  {
-    name: 'Starter',
-    price: 'Free',
-    period: 'for small teams',
-    text: 'Get your team organised today.',
-    items: ['Employee profiles', 'Verified clock-in & attendance', 'Leave requests & approvals', 'Up to 10 employees'],
-    cta: 'Start free',
-  },
-  {
-    name: 'Business',
-    price: 'Coming soon',
-    period: 'per employee / month',
-    text: 'Run people, money and customers in one place.',
-    items: ['Everything in Starter', 'Unlimited employees', 'Tasks & performance reviews', 'Payroll with PAYE & pension', 'Customers (CRM) & invoicing', 'Income, expenses & profit reports'],
-    cta: 'Join early access',
-    featured: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 'Talk to us',
-    period: 'for larger organisations',
-    text: 'Multiple branches, custom roles and calls.',
-    items: ['Multiple branches', 'Custom roles & scopes', 'Cloud phone & call reviews', 'Priority support'],
-    cta: 'Contact sales',
-  },
-];
+// Pricing comes from the same list the sign-up page uses (src/config/plans.js)
+const plans = PLANS.map((p) => ({
+  ...p,
+  price: formatMoney(p.priceKobo, { decimals: false }),
+  period: 'per year',
+  text: p.tagline,
+  cta: `Choose ${p.name}`,
+}));
 
 function DashboardPreview() {
   return (
@@ -226,7 +209,7 @@ export default function Home() {
               </p>
               <div className="hero__ctas">
                 <Link to="/signup" className="btn btn--success btn--lg">
-                  Get started free <ArrowRight size={18} />
+                  Get started <ArrowRight size={18} />
                 </Link>
                 <a href="#how-it-works" className="btn btn--ghost-light btn--lg">
                   See how it works
@@ -363,7 +346,7 @@ export default function Home() {
           <div className="container">
             <div className="section__head">
               <p className="eyebrow">Pricing</p>
-              <h2>Start free. Grow into it.</h2>
+              <h2>One yearly price. Grow into it.</h2>
               <p>Simple plans for businesses of every size.</p>
             </div>
             <div className="plans">
@@ -379,7 +362,7 @@ export default function Home() {
                       <li key={i}><CheckCircle2 size={16} /> {i}</li>
                     ))}
                   </ul>
-                  <Link to="/signup" className={`btn btn--block ${p.featured ? 'btn--primary' : 'btn--outline'}`}>
+                  <Link to={`/signup?plan=${p.id}`} className={`btn btn--block ${p.featured ? 'btn--primary' : 'btn--outline'}`}>
                     {p.cta}
                   </Link>
                 </article>
@@ -412,7 +395,7 @@ export default function Home() {
             <h2>Ready to run your business smarter?</h2>
             <p>Set up your organisation and invite your team in minutes.</p>
             <Link to="/signup" className="btn btn--success btn--lg">
-              Get started free <ArrowRight size={18} />
+              Get started <ArrowRight size={18} />
             </Link>
           </div>
         </section>

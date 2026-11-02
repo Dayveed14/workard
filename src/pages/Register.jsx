@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertCircle, ArrowRight } from 'lucide-react';
+import { AlertCircle, ArrowRight, Check } from 'lucide-react';
 import AuthLayout from '../components/AuthLayout.jsx';
 import PasswordInput from '../components/PasswordInput.jsx';
 import OtpStep from '../components/OtpStep.jsx';
 import Field from '../components/Field.jsx';
 import PasswordRules, { passwordIsValid } from '../components/PasswordRules.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
+import { PLANS } from '../config/plans.js';
+import { formatMoney } from '../utils/format.js';
+import './Register.css';
 
-const initial = { fullName: '', organizationName: '', email: '', phone: '', size: '', password: '' };
+const initial = { fullName: '', organizationName: '', email: '', phone: '', size: '', password: '', plan: 'business' };
 
 // Step 1: details → Step 2: 6-digit code from email
 export default function Register() {
@@ -21,6 +24,12 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [challenge, setChallenge] = useState(null);
 
+  // /signup?plan=starter (from the home page pricing) picks that plan.
+  // Read after the first render so the prerendered page and the browser match.
+  useEffect(() => {
+    const plan = new URLSearchParams(window.location.search).get('plan');
+    if (PLANS.some((p) => p.id === plan)) setForm((f) => ({ ...f, plan }));
+  }, []);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -54,6 +63,7 @@ export default function Register() {
           phone: form.phone.trim(),
           size: form.size,
           password: form.password,
+          plan: form.plan,
         })
       );
     } catch (err) {
@@ -64,9 +74,10 @@ export default function Register() {
     }
   };
 
+  // Verified → straight to payment for the chosen plan
   const onVerify = async (code) => {
     await verifyOtp(challenge.challengeToken, code);
-    navigate('/dashboard', { replace: true });
+    navigate(`/billing?plan=${form.plan}`, { replace: true });
   };
 
   if (challenge) {
@@ -91,8 +102,8 @@ export default function Register() {
 
   return (
     <AuthLayout
-      title="Create your free account"
-      subtitle="Set up your organisation in under two minutes. No card required."
+      title="Create your account"
+      subtitle="Choose a plan, set up your organisation, then pay securely with Paystack."
       footer={
         <>
           Already have an account? <Link to="/login">Log in</Link>
@@ -105,6 +116,25 @@ export default function Register() {
             <AlertCircle size={18} /> {formError}
           </div>
         )}
+
+        <fieldset className="plan-pick">
+          <legend className="field__label">Plan (paid yearly)</legend>
+          {PLANS.map((p) => (
+            <label key={p.id} className={`plan-pick__option ${form.plan === p.id ? 'is-on' : ''}`}>
+              <input type="radio" name="plan" value={p.id} checked={form.plan === p.id} onChange={onChange} />
+              <span className="plan-pick__name">
+                {p.name}
+                {form.plan === p.id && <Check size={14} />}
+              </span>
+              <strong>{formatMoney(p.priceKobo, { decimals: false })}</strong>
+              <small>/ year</small>
+            </label>
+          ))}
+          {errors.plan && <span className="field__error">{errors.plan}</span>}
+          <p className="plan-pick__note">
+            {PLANS.find((p) => p.id === form.plan)?.items.slice(0, 3).join(' · ')}. <Link to="/#pricing">Compare plans</Link>
+          </p>
+        </fieldset>
 
         <Field label="Full name" name="fullName" error={errors.fullName}>
           {input('fullName', { placeholder: 'Ada Okafor', autoComplete: 'name' })}
@@ -165,7 +195,7 @@ export default function Register() {
         </Field>
 
         <button type="submit" className="btn btn--success btn--block form__submit" disabled={submitting}>
-          {submitting ? <span className="form__spinner" aria-label="Creating account" /> : <>Create account <ArrowRight size={18} /></>}
+          {submitting ? <span className="form__spinner" aria-label="Creating account" /> : <>Continue <ArrowRight size={18} /></>}
         </button>
       </form>
     </AuthLayout>

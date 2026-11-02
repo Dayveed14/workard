@@ -19,17 +19,18 @@ const TABS = [
   { id: 'branches', label: 'Branches & clock-in', permission: 'organization.manage', Component: BranchesSettings },
   { id: 'structure', label: 'Departments & teams', permission: 'organization.manage', Component: StructureSettings },
   { id: 'leave-types', label: 'Leave types', permission: 'organization.manage', Component: LeaveTypesSettings },
-  { id: 'finance', label: 'Invoicing & finance', permission: 'finance.manage', Component: FinanceSettings },
-  { id: 'payroll', label: 'Payroll', permission: ['payroll.manage', 'payroll.approve'], Component: PayrollSettings },
-  { id: 'reviews', label: 'Reviews', permission: 'reviews.setup', Component: ReviewSettings },
+  { id: 'finance', label: 'Invoicing & finance', permission: 'finance.manage', feature: 'invoices', Component: FinanceSettings },
+  { id: 'payroll', label: 'Payroll', permission: ['payroll.manage', 'payroll.approve'], feature: 'payroll', Component: PayrollSettings },
+  { id: 'reviews', label: 'Reviews', permission: 'reviews.setup', feature: 'reviews', Component: ReviewSettings },
   { id: 'roles', label: 'Roles & permissions', permission: 'roles.manage', Component: RolesSettings },
   { id: 'activity', label: 'Activity log', permission: 'audit.view', Component: ActivityLog },
 ];
 
 export default function Settings() {
-  const { can, canAny } = useAuth();
+  const { can, canAny, subscription } = useAuth();
   const [params, setParams] = useSearchParams();
-  const tabs = TABS.filter((t) => (Array.isArray(t.permission) ? canAny(...t.permission) : can(t.permission)));
+  const tabs = TABS.filter((t) => (Array.isArray(t.permission) ? canAny(...t.permission) : can(t.permission)))
+    .filter((t) => !t.feature || subscription?.features.includes(t.feature)); // only what the plan includes
   const active = tabs.find((t) => t.id === params.get('tab')) || tabs[0];
 
   return (

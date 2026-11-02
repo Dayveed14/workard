@@ -12,10 +12,11 @@ const rawApiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const API_URL = import.meta.env.PROD && /localhost|127\.0\.0\.1/.test(rawApiUrl) ? '' : rawApiUrl;
 
 export class ApiError extends Error {
-  constructor(message, status, errors) {
+  constructor(message, status, errors, code) {
     super(message);
     this.status = status;
     this.errors = errors || {};
+    this.code = code; // e.g. 'PLAN_UPGRADE_REQUIRED', 'PLAN_LIMIT'
   }
 }
 
@@ -54,7 +55,11 @@ export async function api(path, { method = 'GET', body, formData, retry = true }
   }
 
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new ApiError(data.message || 'Something went wrong', res.status, data.errors);
+  // Plan unpaid or expired while the app is open → go to the billing page
+  if (res.status === 402 && typeof window !== 'undefined' && !window.location.pathname.startsWith('/billing')) {
+    window.location.assign('/billing');
+  }
+  if (!res.ok) throw new ApiError(data.message || 'Something went wrong', res.status, data.errors, data.code);
   return data;
 }
 

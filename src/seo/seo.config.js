@@ -18,9 +18,9 @@ export const pages = {
     description: 'Log in to your Workard account to manage your team, attendance, leave and business operations.',
   },
   '/signup': {
-    title: 'Create your free account — Workard',
+    title: 'Create your account — Workard',
     description:
-      'Set up your organisation on Workard for free. Employees, verified clock-in, leave approvals and more in one simple platform.',
+      'Choose a Starter, Business or Enterprise plan and set up your organisation on Workard: employees, verified clock-in, onboarding, payroll and more.',
   },
   '/forgot-password': {
     title: 'Reset your password — Workard',
@@ -41,6 +41,8 @@ const APP_TITLES = {
   '/finance': 'Finance',
   '/payroll': 'Payroll',
   '/payslips': 'Payslips',
+  '/billing': 'Plan & billing',
+  '/onboarding': 'Onboarding',
   '/tasks': 'Tasks',
   '/reviews': 'Performance reviews',
   '/i': 'Invoice',

@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Banknote,
+  Lock,
+  UserPlus,
+  CreditCard,
   ClipboardCheck,
   Receipt,
   CalendarDays,
@@ -27,18 +30,20 @@ import { useToast } from '../context/ToastContext.jsx';
 import './AppLayout.css';
 
 // Sidebar links. `anyOf` = only shown to people with one of these permissions.
+// `feature` = the plan must include it; if not, the link shows a lock and opens the plans page.
 const NAV = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/attendance', label: 'Attendance', icon: Clock },
   { to: '/leave', label: 'Leave', icon: CalendarDays },
-  { to: '/tasks', label: 'Tasks', icon: ListChecks },
-  { to: '/reviews', label: 'Reviews', icon: ClipboardCheck },
+  { to: '/onboarding', label: 'Onboarding', icon: UserPlus },
+  { to: '/tasks', label: 'Tasks', icon: ListChecks, feature: 'tasks' },
+  { to: '/reviews', label: 'Reviews', icon: ClipboardCheck, feature: 'reviews' },
   { to: '/employees', label: 'Employees', icon: Users, anyOf: ['employees.view'] },
-  { to: '/customers', label: 'Customers', icon: Contact, anyOf: ['customers.view'] },
-  { to: '/invoices', label: 'Invoices', icon: FileText, anyOf: ['invoices.view'] },
-  { to: '/finance', label: 'Finance', icon: Wallet, anyOf: ['finance.view'] },
-  { to: '/payroll', label: 'Payroll', icon: Banknote, anyOf: ['payroll.view'] },
-  { to: '/payslips', label: 'My payslips', icon: Receipt, employeeOnly: true },
+  { to: '/customers', label: 'Customers', icon: Contact, anyOf: ['customers.view'], feature: 'crm' },
+  { to: '/invoices', label: 'Invoices', icon: FileText, anyOf: ['invoices.view'], feature: 'invoices' },
+  { to: '/finance', label: 'Finance', icon: Wallet, anyOf: ['finance.view'], feature: 'finance' },
+  { to: '/payroll', label: 'Payroll', icon: Banknote, anyOf: ['payroll.view'], feature: 'payroll' },
+  { to: '/payslips', label: 'My payslips', icon: Receipt, employeeOnly: true, feature: 'payroll' },
   { to: '/settings', label: 'Settings', icon: Settings, anyOf: ['organization.manage', 'roles.manage', 'audit.view', 'finance.manage', 'payroll.manage', 'payroll.approve', 'reviews.setup'] },
 ];
 
@@ -48,7 +53,12 @@ const SOON = [
 ];
 
 export default function AppLayout() {
-  const { user, organization, organizations, employee, role, canAny, logout, switchOrganization } = useAuth();
+  const { user, organization, organizations, employee, role, canAny, logout, switchOrganization, subscription } = useAuth();
+  const has = (feature) => !feature || subscription?.features.includes(feature);
+  const locked = subscription && !subscription.usable; // unpaid / expired: only billing works
+  // Owners see a reminder in the last 30 days of the year (and during the grace days)
+  const renewSoon = role?.isOwner && subscription && !subscription.isLegacy &&
+    (subscription.status === 'grace' || (subscription.status === 'active' && subscription.daysLeft <= 30));
   const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -94,11 +104,24 @@ export default function AppLayout() {
         </div>
 
         <nav className="sidebar__nav">
-          {NAV.filter((item) => (item.employeeOnly ? employee : !item.anyOf || canAny(...item.anyOf))).map(({ to, label, icon: Icon }) => (
-            <NavLink key={to} to={to} className={({ isActive }) => `sidebar__link ${isActive ? 'is-active' : ''}`}>
-              <Icon size={18} /> {label}
-            </NavLink>
-          ))}
+          {locked ? (
+            <NavLink to="/billing" className="sidebar__link is-active"><CreditCard size={18} /> Plan & billing</NavLink>
+          ) : (
+            NAV.filter((item) => (item.employeeOnly ? employee : !item.anyOf || canAny(...item.anyOf)))
+              .filter((item) => item.to !== '/onboarding' || canAny('onboarding.manage'))
+              .map(({ to, label, icon: Icon, feature }) =>
+                has(feature) ? (
+                  <NavLink key={to} to={to} className={({ isActive }) => `sidebar__link ${isActive ? 'is-active' : ''}`}>
+                    <Icon size={18} /> {label}
+                  </NavLink>
+                ) : (
+                  // Not on this plan: shown with a lock so people know it exists
+                  <NavLink key={to} to={to} className={({ isActive }) => `sidebar__link sidebar__link--locked ${isActive ? 'is-active' : ''}`} title="Not on your plan">
+                    <Icon size={18} /> {label} <Lock size={13} className="sidebar__lock" />
+                  </NavLink>
+                )
+              )
+          )}
 
           <p className="sidebar__section">Coming soon</p>
           {SOON.map(({ label, icon: Icon }) => (
@@ -149,6 +172,9 @@ export default function AppLayout() {
                     <UserCircle size={16} /> My profile
                   </Link>
                 )}
+                <Link to="/billing" onClick={() => setUserMenu(false)}>
+                  <CreditCard size={16} /> Plan & billing
+                </Link>
                 <button type="button" onClick={onLogout}>
                   <LogOut size={16} /> Log out
                 </button>
@@ -158,6 +184,14 @@ export default function AppLayout() {
         </header>
 
         <main className="app__content">
+          {renewSoon && location.pathname !== '/billing' && (
+            <div className="app__renew">
+              {subscription.status === 'grace'
+                ? 'Your Workard plan has ended — renew in the next few days to keep access.'
+                : `Your ${subscription.planName} plan ends in ${subscription.daysLeft} day${subscription.daysLeft === 1 ? '' : 's'}.`}{' '}
+              <Link to="/billing">Renew now</Link>
+            </div>
+          )}
           <Outlet />
         </main>
       </div>

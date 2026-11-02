@@ -11,6 +11,7 @@ import {
   CalendarDays,
   CalendarX,
   ClipboardCheck,
+  UserPlus,
   Clock,
   UserCheck,
   UserX,
@@ -218,9 +219,9 @@ function MyFollowUps() {
 }
 
 // Everyone: open tasks (overdue & today first) + any review waiting on them
-function MyTasks() {
+function MyTasks({ withReviews }) {
   const { data, reload } = useApi('/api/tasks?view=mine&status=open&limit=5');
-  const { data: reviews } = useApi('/api/reviews?view=mine&status=open');
+  const { data: reviews } = useApi(withReviews ? '/api/reviews?view=mine&status=open' : null);
   const waiting = (reviews || []).filter((r) => ['self_review', 'acknowledgement'].includes(r.status));
   if (!data) return null;
   return (
@@ -238,6 +239,25 @@ function MyTasks() {
       ))}
       <TaskList tasks={data.tasks} onChange={reload} compact />
     </section>
+  );
+}
+
+// A new joiner's onboarding checklist (until it's finished)
+function MyOnboarding() {
+  const { data } = useApi('/api/onboarding/mine');
+  if (!data || data.status !== 'in_progress') return null;
+  const mine = data.items.filter((i) => i.owner === 'new_joiner');
+  const done = mine.filter((i) => i.done_at).length;
+  return (
+    <Link to={`/onboarding/${data.id}`} className="card dash__onboarding">
+      <span className="dash__onboarding-icon"><UserPlus size={22} /></span>
+      <span>
+        <strong>Welcome aboard! Finish your onboarding</strong>
+        <small>{done} of {mine.length} steps done</small>
+        <span className="dash__onboarding-bar"><span style={{ width: `${mine.length ? (done / mine.length) * 100 : 0}%` }} /></span>
+      </span>
+      <ArrowRight size={18} />
+    </Link>
   );
 }
 
@@ -264,7 +284,8 @@ function MyLeaveSummary() {
 }
 
 export default function Dashboard() {
-  const { user, employee, organization, can } = useAuth();
+  const { user, employee, organization, can, subscription } = useAuth();
+  const has = (feature) => subscription?.features.includes(feature);
   const firstName = employee?.firstName || user?.fullName?.split(' ')[0];
 
   return (
@@ -275,14 +296,15 @@ export default function Dashboard() {
       />
 
       {employee && <ClockCard />}
-      {employee && <MyTasks />}
+      {employee && <MyOnboarding />}
+      {employee && has('tasks') && <MyTasks withReviews={has('reviews')} />}
 
       {can('dashboard.view') ? (
         <TeamOverview />
       ) : (
         <div className="dash__mine">
           {employee && <MyLeaveSummary />}
-          {can('customers.view') && <MyFollowUps />}
+          {can('customers.view') && has('crm') && <MyFollowUps />}
         </div>
       )}
     </div>

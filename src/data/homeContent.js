@@ -34,7 +34,11 @@ export const faq = [
     a: 'Yes. Managers give out tasks with due dates, checklists and files, and can set tasks that repeat every day, week or month. Staff get a morning email of what’s due. Monthly or quarterly performance reviews put each person’s attendance and task record next to the ratings, so reviews are based on facts, not just opinion.',
   },
   {
+    q: 'How much does Workard cost?',
+    a: 'Starter is ₦250,000 a year (up to 10 employees: attendance, leave, documents and onboarding). Business is ₦600,000 a year and adds tasks, performance reviews, payroll, customers, invoicing and finance. Enterprise is ₦1,000,000 a year with unlimited branches, custom roles and the cloud phone. You pay once a year by card, transfer or USSD through Paystack, and you can upgrade any time by paying only the difference for the rest of your year.',
+  },
+  {
     q: 'What’s available now, and what’s next?',
-    a: 'Employees, verified attendance, leave, tasks, performance reviews, payroll, customers (CRM), invoicing, and income & expense tracking are available now. Workard’s built-in cloud phone system for business calls comes next.',
+    a: 'Employees, verified attendance, leave, onboarding, tasks, performance reviews, payroll, customers (CRM), invoicing, and income & expense tracking are available now. Workard’s built-in cloud phone system for business calls comes next.',
   },
 ];
