@@ -6,6 +6,7 @@ import GeneralSettings from './GeneralSettings.jsx';
 import BranchesSettings from './BranchesSettings.jsx';
 import StructureSettings from './StructureSettings.jsx';
 import LeaveTypesSettings from './LeaveTypesSettings.jsx';
+import HolidaysSettings from './HolidaysSettings.jsx';
 import RolesSettings from './RolesSettings.jsx';
 import FinanceSettings from './FinanceSettings.jsx';
 import PayrollSettings from './PayrollSettings.jsx';
@@ -19,6 +20,7 @@ const TABS = [
   { id: 'branches', label: 'Branches & clock-in', permission: 'organization.manage', Component: BranchesSettings },
   { id: 'structure', label: 'Departments & teams', permission: 'organization.manage', Component: StructureSettings },
   { id: 'leave-types', label: 'Leave types', permission: 'organization.manage', Component: LeaveTypesSettings },
+  { id: 'holidays', label: 'Public holidays', permission: 'organization.manage', Component: HolidaysSettings },
   { id: 'finance', label: 'Invoicing & finance', permission: 'finance.manage', feature: 'invoices', Component: FinanceSettings },
   { id: 'payroll', label: 'Payroll', permission: ['payroll.manage', 'payroll.approve'], feature: 'payroll', Component: PayrollSettings },
   { id: 'reviews', label: 'Reviews', permission: 'reviews.setup', feature: 'reviews', Component: ReviewSettings },

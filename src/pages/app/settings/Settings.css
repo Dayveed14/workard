@@ -272,3 +272,15 @@
 .settings__reviews {
   max-width: 900px;
 }
+
+/* ===== Public holidays ===== */
+.settings__year.field__input {
+  flex: 0 0 auto;
+  width: 110px;
+  height: 36px;
+}
+
+.settings__hint {
+  margin: -6px 0 0;
+  font-size: 0.82rem;
+}

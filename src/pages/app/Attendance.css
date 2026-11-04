@@ -105,3 +105,106 @@
     justify-content: flex-start;
   }
 }
+
+/* ===== Monthly adherence ===== */
+.att-month__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--gray);
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.att-month__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.att-month__legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.att-month__legend-note {
+  margin-left: auto;
+}
+
+.att-month {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.att-month li {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.1fr) 190px minmax(200px, 2fr);
+  align-items: center;
+  gap: 18px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--gray);
+  cursor: pointer;
+}
+
+.att-month li:last-child {
+  border-bottom: 0;
+}
+
+.att-month li:hover {
+  background: var(--surface);
+}
+
+.att-month__score {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.att-month__score > span {
+  display: grid;
+  gap: 1px;
+}
+
+.att-month__pct {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.att-month__bar {
+  display: grid;
+  gap: 6px;
+}
+
+.att-month__figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.att-month__flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #b45309;
+}
+
+@media (max-width: 760px) {
+  .att-month li {
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+
+  .att-month__bar {
+    grid-column: 1 / -1;
+  }
+
+  .att-month__legend-note {
+    margin-left: 0;
+  }
+}

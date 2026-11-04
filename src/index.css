@@ -15,6 +15,12 @@
   --danger: #dc2626;
   --amber: #d97706;
 
+  /* Attendance chart colours (checked for colour-blind separation; always shown with labels) */
+  --att-ontime: #10b981;
+  --att-late: #f59e0b;
+  --att-absent: #dc2626;
+  --att-leave: #3b82f6;
+
   --font-display: 'Montserrat', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
@@ -569,7 +575,7 @@ select.field__input {
   font-weight: 600;
 }
 
-.person span {
+.person span:not(.avatar) {
   display: block;
   font-size: 0.82rem;
   color: var(--muted);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { Check, MapPin, ShieldCheck, Wifi, X } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { BarChart3, Check, Flag, MapPin, ShieldCheck, Wifi, X } from 'lucide-react';
 import PageHeader from '../../components/PageHeader.jsx';
 import Tabs from '../../components/Tabs.jsx';
 import ClockCard from '../../components/ClockCard.jsx';
@@ -9,12 +9,80 @@ import Avatar from '../../components/Avatar.jsx';
 import Badge from '../../components/Badge.jsx';
 import EmptyState from '../../components/EmptyState.jsx';
 import ReviewModal from '../../components/ReviewModal.jsx';
+import AdherenceDonut, { ATTENDANCE_PARTS, AdherenceTrend } from '../../components/AdherenceDonut.jsx';
+import { AdherenceBar, AdherenceRing } from '../../components/AdherenceBar.jsx';
 import { api } from '../../api/client.js';
 import { useApi } from '../../hooks/useApi.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
-import { formatDate, formatTime, fullName, todayString } from '../../utils/format.js';
+import { formatDate, formatTime, fullName, monthLabel, todayString } from '../../utils/format.js';
 import './Attendance.css';
+
+// Monthly adherence for everyone the viewer can see — worst first, so the people
+// who need a conversation are at the top. Bars compare people; the donut sums up the team.
+function Monthly() {
+  const navigate = useNavigate();
+  const [month, setMonth] = useState(todayString().slice(0, 7));
+  const { data, loading } = useApi(`/api/attendance/monthly?month=${month}`);
+
+  return (
+    <>
+      <div className="att__toolbar">
+        <input type="month" className="field__input" value={month} max={todayString().slice(0, 7)} onChange={(e) => setMonth(e.target.value)} aria-label="Month" />
+        {data && data.holidays > 0 && <span className="muted">{data.holidays} public holiday{data.holidays === 1 ? '' : 's'} not counted</span>}
+      </div>
+
+      {loading && !data && <div className="page-loader"><span className="page-loader__spinner" /></div>}
+      {data && (
+        <>
+          <AdherenceDonut data={{ ...data.team, holidays: 0, upTo: data.upTo }} title={`Everyone, ${monthLabel(month)}`} />
+
+          <div className="card">
+            {data.people.length === 0 ? (
+              <EmptyState icon={BarChart3} title="No one to show" />
+            ) : (
+              <>
+                <div className="att-month__legend" aria-hidden="true">
+                  {ATTENDANCE_PARTS.map((p) => (
+                    <span key={p.key}><i style={{ background: p.color }} /> {p.label}</span>
+                  ))}
+                  <span className="att-month__legend-note">Sorted by on-time %, lowest first</span>
+                </div>
+                <ul className="att-month">
+                  {data.people.map((p) => (
+                    <li key={p.employeeId} onClick={() => navigate(`/employees/${p.employeeId}?tab=attendance`)}>
+                      <div className="person att-month__person">
+                        <Avatar name={`${p.firstName} ${p.lastName}`} src={p.photoUrl} size={36} />
+                        <span>
+                          <strong>{p.firstName} {p.lastName}</strong>
+                          <span>{[p.jobTitle, p.departmentName].filter(Boolean).join(' · ') || '—'}</span>
+                        </span>
+                      </div>
+                      <div className="att-month__score">
+                        <AdherenceRing value={p.adherence} />
+                        <span>
+                          <span className="att-month__pct">{p.adherence === null ? 'No days yet' : 'on time'}</span>
+                          <AdherenceTrend current={p.adherence} previous={p.previousAdherence} />
+                        </span>
+                      </div>
+                      <div className="att-month__bar">
+                        <AdherenceBar data={p} />
+                        <span className="att-month__figures">
+                          {p.onTime} on time · {p.late} late · {p.absent} absent{p.onLeave > 0 && ` · ${p.onLeave} on leave`}
+                          {p.flagged > 0 && <span className="att-month__flag"><Flag size={12} /> {p.flagged} flagged</span>}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        </>
+      )}
+    </>
+  );
+}
 
 // Daily register for the people the viewer can see
 function Register() {
@@ -165,7 +233,7 @@ export default function Attendance() {
 
   const tabs = [
     ...(employee ? [{ id: 'mine', label: 'My attendance' }] : []),
-    ...(can('attendance.view') ? [{ id: 'register', label: 'Daily register' }] : []),
+    ...(can('attendance.view') ? [{ id: 'register', label: 'Daily register' }, { id: 'monthly', label: 'Monthly' }] : []),
     ...(can('attendance.review') ? [{ id: 'flagged', label: 'Flagged', count: flagged?.length }] : []),
   ];
   const tab = tabs.some((t) => t.id === params.get('tab')) ? params.get('tab') : tabs[0]?.id;
@@ -183,6 +251,7 @@ export default function Attendance() {
         </>
       )}
       {tab === 'register' && <Register />}
+      {tab === 'monthly' && <Monthly />}
       {tab === 'flagged' && <Flagged onReviewed={reloadFlagged} />}
       {!tabs.length && <EmptyState title="Your account isn’t linked to an employee profile" />}
     </>

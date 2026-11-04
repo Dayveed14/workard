@@ -1,0 +1,56 @@
+/* Thin segmented bar: 8px, rounded ends, 2px gaps between parts */
+.adh-bar {
+  display: flex;
+  gap: 2px;
+  width: 100%;
+  min-width: 120px;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.adh-bar > span {
+  flex-basis: 0;
+  min-width: 3px;
+}
+
+.adh-bar--empty {
+  background: var(--surface);
+  border: 1px dashed var(--gray);
+}
+
+/* Small adherence ring */
+.adh-ring {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.adh-ring svg {
+  position: absolute;
+  inset: 0;
+}
+
+.adh-ring strong {
+  position: relative;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.adh-ring__track {
+  stroke: var(--gray);
+}
+
+.adh-ring--good .adh-ring__fill {
+  stroke: var(--att-ontime);
+}
+
+.adh-ring--ok .adh-ring__fill {
+  stroke: var(--att-late);
+}
+
+.adh-ring--poor .adh-ring__fill {
+  stroke: var(--att-absent);
+}

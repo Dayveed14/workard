@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Clock } from 'lucide-react';
 import Badge from './Badge.jsx';
 import EmptyState from './EmptyState.jsx';
+import AdherenceDonut from './AdherenceDonut.jsx';
 import { useApi } from '../hooks/useApi.js';
 import { formatDate, formatHours, formatTime, todayString } from '../utils/format.js';
 import './MonthAttendance.css';
@@ -31,6 +32,8 @@ export default function MonthAttendance({ basePath }) {
           </div>
         )}
       </div>
+
+      {data?.adherence && <AdherenceDonut data={data.adherence} previous={data.previousAdherence} />}
 
       <div className="card">
         {loading && <div className="page-loader"><span className="page-loader__spinner" /></div>}
