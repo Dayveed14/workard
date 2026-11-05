@@ -1,17 +1,25 @@
 import { useState } from 'react';
-import { Clock } from 'lucide-react';
+import { Clock, MessageSquare } from 'lucide-react';
+import ExplainModal from './ExplainModal.jsx';
 import Badge from './Badge.jsx';
 import EmptyState from './EmptyState.jsx';
 import AdherenceDonut from './AdherenceDonut.jsx';
 import { useApi } from '../hooks/useApi.js';
-import { formatDate, formatHours, formatTime, todayString } from '../utils/format.js';
+import { EXPLANATION_LABELS, explainDeadline, formatDate, formatHours, formatTime, timeLeft, todayString } from '../utils/format.js';
 import './MonthAttendance.css';
 
 // One month of attendance for one person.
 //   basePath: '/api/me/attendance' or '/api/employees/12/attendance'
 export default function MonthAttendance({ basePath }) {
   const [month, setMonth] = useState(todayString().slice(0, 7));
-  const { data, loading, error } = useApi(`${basePath}?month=${month}`);
+  const { data, loading, error, reload } = useApi(`${basePath}?month=${month}`);
+  const [explaining, setExplaining] = useState(null);
+  const isMine = basePath === '/api/me/attendance';
+
+  // The employee can explain a flag within 24 hours, and give a reason for any late day
+  const canExplain = (r) =>
+    isMine && !r.explanation_response &&
+    (r.review_status === 'pending' ? !!timeLeft(explainDeadline(r)) : r.is_late === 1 && !r.is_flagged);
 
   return (
     <div className="month-att">
@@ -70,7 +78,21 @@ export default function MonthAttendance({ basePath }) {
                         <Badge status="present" />
                       )}
                     </td>
-                    <td className="muted">{r.flag_reason || r.review_note || '—'}</td>
+                    <td className="month-att__notes">
+                      {r.flag_reason && <span className="muted">{r.flag_reason}</span>}
+                      {r.explanation_response && (
+                        <span className="month-att__said">
+                          {r.explanation_response === 'no_response' ? EXPLANATION_LABELS.no_response : `“${r.explanation_reason}”`}
+                        </span>
+                      )}
+                      {r.review_note && <span className="muted">Manager: {r.review_note}</span>}
+                      {canExplain(r) && (
+                        <button type="button" className="btn btn--outline btn--sm" onClick={() => setExplaining(r)}>
+                          <MessageSquare size={14} /> {r.review_status === 'pending' ? 'Explain' : 'Add reason'}
+                        </button>
+                      )}
+                      {!r.flag_reason && !r.explanation_response && !r.review_note && !canExplain(r) && <span className="muted">—</span>}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -78,6 +100,7 @@ export default function MonthAttendance({ basePath }) {
           </div>
         )}
       </div>
+      {explaining && <ExplainModal record={explaining} onDone={reload} onClose={() => setExplaining(null)} />}
     </div>
   );
 }

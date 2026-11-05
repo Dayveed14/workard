@@ -92,8 +92,75 @@
 }
 
 .att__reason {
+  margin: 0;
   color: #b91c1c;
   font-size: 0.9rem;
+}
+
+.att__flag-group {
+  margin-bottom: 16px;
+}
+
+.att__flag-group h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+}
+
+.att__count {
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--gray);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.att__flag-body {
+  display: grid;
+  gap: 8px;
+}
+
+.att__said {
+  padding: 8px 12px;
+  border-left: 3px solid var(--gray);
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.88rem;
+}
+
+.att__said strong {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.att__said p {
+  margin: 4px 0 0;
+  color: var(--text);
+}
+
+.att__said--dispute {
+  border-left-color: var(--blue);
+}
+
+.att__said--accept {
+  border-left-color: var(--att-late);
+}
+
+.att__said--no_response {
+  border-left-color: var(--att-absent);
+}
+
+.att__waiting {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 @media (max-width: 760px) {

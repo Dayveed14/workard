@@ -20,6 +20,11 @@
   --att-late: #f59e0b;
   --att-absent: #dc2626;
   --att-leave: #3b82f6;
+  /* Sales stages (validated: dataviz validate_palette.js, light, all pairs — always shown with labels) */
+  --stage-lead: #2a78d6;
+  --stage-prospect: #eda100;
+  --stage-customer: #1baf7a;
+  --stage-lost: #e34948;
 
   --font-display: 'Montserrat', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;

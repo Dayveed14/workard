@@ -234,3 +234,9 @@
     grid-template-columns: 1fr;
   }
 }
+
+.billing__notice--blue {
+  background: var(--blue-50);
+  border-color: #bfdbfe;
+  color: #1e40af;
+}

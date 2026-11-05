@@ -12,6 +12,7 @@ import FinanceSettings from './FinanceSettings.jsx';
 import PayrollSettings from './PayrollSettings.jsx';
 import ReviewSettings from './ReviewSettings.jsx';
 import ActivityLog from './ActivityLog.jsx';
+import BrandingSettings from './BrandingSettings.jsx';
 import './Settings.css';
 
 // Each tab only shows if the user has the permission for it
@@ -22,6 +23,7 @@ const TABS = [
   { id: 'leave-types', label: 'Leave types', permission: 'organization.manage', Component: LeaveTypesSettings },
   { id: 'holidays', label: 'Public holidays', permission: 'organization.manage', Component: HolidaysSettings },
   { id: 'finance', label: 'Invoicing & finance', permission: 'finance.manage', feature: 'invoices', Component: FinanceSettings },
+  { id: 'invoice-look', label: 'Invoice look', permission: 'finance.manage', feature: 'invoices', Component: BrandingSettings },
   { id: 'payroll', label: 'Payroll', permission: ['payroll.manage', 'payroll.approve'], feature: 'payroll', Component: PayrollSettings },
   { id: 'reviews', label: 'Reviews', permission: 'reviews.setup', feature: 'reviews', Component: ReviewSettings },
   { id: 'roles', label: 'Roles & permissions', permission: 'roles.manage', Component: RolesSettings },

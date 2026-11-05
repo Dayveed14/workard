@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AlertCircle, FilePlus2, Mail, MapPin, MessageSquarePlus, Pencil, Phone, User } from 'lucide-react';
+import { AlertCircle, ArrowLeft, FilePlus2, Mail, MapPin, MessageSquarePlus, Pencil, Phone, User } from 'lucide-react';
 import Badge from '../../../components/Badge.jsx';
 import Tabs from '../../../components/Tabs.jsx';
 import Field from '../../../components/Field.jsx';
@@ -12,7 +12,7 @@ import { api } from '../../../api/client.js';
 import { useApi } from '../../../hooks/useApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { useToast } from '../../../context/ToastContext.jsx';
-import { ACTIVITY_TYPES, PAYMENT_METHODS, formatDate, formatDateTime, formatMoney } from '../../../utils/format.js';
+import { ACTIVITY_TYPES, CUSTOMER_STAGES, PAYMENT_METHODS, formatDate, formatDateTime, formatMoney } from '../../../utils/format.js';
 import './CustomerProfile.css';
 
 // ---------- Activity timeline + "log activity" form ----------
@@ -171,6 +171,23 @@ function CustomerPayments({ customerId }) {
   );
 }
 
+// "Lead 3 Nov → Prospect 10 Nov → Customer 21 Nov"
+function StageJourney({ customerId, stage }) {
+  // The stage is in the URL so the history reloads after an edit changes it
+  const { data } = useApi(`/api/customers/${customerId}/stages?s=${stage}`);
+  if (!data || data.length < 2) return null;
+  return (
+    <ol className="cprofile__journey" aria-label="Stage history">
+      {data.map((h, i) => (
+        <li key={i} title={h.changed_by_name ? `by ${h.changed_by_name}` : undefined}>
+          <span className={`cprofile__dot cprofile__dot--${h.to_stage}`} />
+          {CUSTOMER_STAGES[h.to_stage] || h.to_stage} <span className="muted">{formatDate(h.changed_at)}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 // ---------- Page ----------
 // Tasks linked to this customer (e.g. "Deliver samples", "Chase payment")
 function CustomerTasks({ customerId }) {
@@ -207,6 +224,7 @@ export default function CustomerProfile() {
 
   return (
     <>
+      <Link to="/customers" className="link-btn cprofile__back"><ArrowLeft size={16} /> Customers</Link>
       <section className="card cprofile__header">
         <div className="cprofile__who">
           <div className="cprofile__title">
@@ -223,6 +241,7 @@ export default function CustomerProfile() {
             Handled by <strong>{c.assigned_name || 'no one yet'}</strong>
             {c.source && ` · Source: ${c.source}`}
           </p>
+          <StageJourney customerId={c.id} stage={c.stage} />
         </div>
 
         <div className="cprofile__money">

@@ -1,0 +1,48 @@
+.sigpad {
+  position: relative;
+}
+
+.sigpad__canvas {
+  display: block;
+  width: 100%;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  touch-action: none; /* drawing, not scrolling, on phones */
+  cursor: crosshair;
+}
+
+.sigpad__hint {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.sigpad__hint::before {
+  content: '✕ ';
+}
+
+.sigpad__clear {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.sigpad__clear:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

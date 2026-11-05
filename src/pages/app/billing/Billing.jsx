@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, Check, CreditCard, Lock, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, Check, CreditCard, Gift, Lock, ShieldCheck } from 'lucide-react';
 import PageHeader from '../../../components/PageHeader.jsx';
 import Badge from '../../../components/Badge.jsx';
 import { api } from '../../../api/client.js';
@@ -31,7 +31,10 @@ export default function Billing() {
 
   const { subscription: sub, isOwner, plans, payments } = data;
   const locked = !sub.usable;
-  const needsNewYear = ['pending_payment', 'expired', 'grace'].includes(sub.status);
+  const onTrial = sub.status === 'trial' || sub.status === 'trial_ended';
+  const isFree = sub.status === 'free'; // billing switched off (early access)
+  const needsNewYear = onTrial || ['expired', 'grace'].includes(sub.status);
+  const days = (n) => `${n} day${n === 1 ? '' : 's'}`;
 
   const pay = async (planId) => {
     setBusy(true);
@@ -45,8 +48,8 @@ export default function Billing() {
   };
 
   const title =
-    sub.status === 'pending_payment'
-      ? `Activate ${organization?.name}`
+    sub.status === 'trial_ended'
+      ? 'Your free trial has ended'
       : sub.status === 'expired'
         ? 'Your plan has expired'
         : 'Plan & billing';
@@ -56,8 +59,8 @@ export default function Billing() {
       <PageHeader
         title={title}
         subtitle={
-          sub.status === 'pending_payment'
-            ? 'Choose your plan and pay for the year to start using Workard.'
+          sub.status === 'trial_ended'
+            ? 'Choose your plan and pay for the year to keep using Workard — your data is safe.'
             : 'Your Workard plan, renewals and payments.'
         }
       />
@@ -65,6 +68,22 @@ export default function Billing() {
       {sub.isLegacy && (
         <div className="billing__notice billing__notice--green">
           <ShieldCheck size={18} /> Your organisation was set up before plans started, so it keeps full access to everything at no charge.
+        </div>
+      )}
+      {isFree && (
+        <div className="billing__notice billing__notice--green">
+          <Gift size={18} /> Workard is free during early access — {organization?.name} has every feature at no charge. Before paid plans start you’ll get a free trial and plenty of notice.
+        </div>
+      )}
+      {sub.status === 'trial' && (
+        <div className="billing__notice billing__notice--blue">
+          <Gift size={18} /> You’re on a free trial of {sub.planName} — {days(sub.daysLeft + 1)} left (until {formatDate(sub.periodEnd)}).
+          {isOwner ? ' Pay any time; your paid year starts the day you pay.' : ' The owner can choose a plan any time.'}
+        </div>
+      )}
+      {sub.status === 'trial_ended' && (
+        <div className="billing__notice billing__notice--red">
+          <Lock size={18} /> Your free trial ended on {formatDate(sub.periodEnd)}. Workard is locked until the owner pays — everything you set up is kept.
         </div>
       )}
       {sub.status === 'grace' && (
@@ -83,7 +102,7 @@ export default function Billing() {
         </div>
       )}
 
-      {!sub.isLegacy && sub.status !== 'pending_payment' && (
+      {!sub.isLegacy && !isFree && !onTrial && (
         <section className="card card__body billing__current">
           <div>
             <span className="muted">Current plan</span>
@@ -100,7 +119,7 @@ export default function Billing() {
         </section>
       )}
 
-      {!sub.isLegacy && (
+      {!sub.isLegacy && !isFree && (
         <div className="billing__plans">
           {plans.map((p) => {
             const info = PLANS.find((x) => x.id === p.id);
@@ -151,7 +170,7 @@ export default function Billing() {
         </div>
       )}
 
-      {needsNewYear && isOwner && chosen && !sub.isLegacy && (
+      {needsNewYear && isOwner && chosen && !sub.isLegacy && !isFree && (
         <div className="billing__paybar card">
           <div>
             <strong>{plans.find((p) => p.id === chosen).name} — one year</strong>

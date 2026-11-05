@@ -1,0 +1,126 @@
+.branding {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.branding__logo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.branding__logo-box,
+.branding__sig-box {
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 64px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+  overflow: hidden;
+}
+
+.branding__sig-box {
+  width: 180px;
+  font-size: 0.82rem;
+}
+
+.branding__logo-box img,
+.branding__sig-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.branding__logo label {
+  cursor: pointer;
+}
+
+.branding__colours {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.branding__swatch {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--gray);
+  cursor: pointer;
+}
+
+.branding__swatch.is-on {
+  box-shadow: 0 0 0 2px var(--navy);
+}
+
+.branding__swatch--none {
+  background: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.branding__picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 3px;
+  border: 1px solid var(--gray);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.branding__picker input {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.branding__draw {
+  display: grid;
+  gap: 8px;
+}
+
+.branding__preview {
+  position: sticky;
+  top: 16px;
+}
+
+.branding__preview-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.branding__preview-doc {
+  font-size: 0.85em;
+  pointer-events: none;
+}
+
+@media (max-width: 1000px) {
+  .branding {
+    grid-template-columns: 1fr;
+  }
+
+  .branding__preview {
+    position: static;
+  }
+}

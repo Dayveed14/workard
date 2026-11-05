@@ -26,6 +26,7 @@ const TONES = {
   lead: 'blue',
   prospect: 'amber',
   customer: 'green',
+  lost: 'red',
   inactive: 'gray',
   // enquiries & complaints
   open: 'red',

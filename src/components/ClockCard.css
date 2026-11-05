@@ -80,6 +80,48 @@
   font-size: 0.85rem;
 }
 
+.clock-card__flag p {
+  margin: 0;
+  color: inherit;
+}
+
+.clock-card__flag > div {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.clock-card__said,
+.clock-card__note {
+  color: #e2e8f0 !important;
+  font-size: 0.82rem;
+}
+
+.clock-card__note {
+  margin: 10px 0 0;
+}
+
+.clock-card__explain {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clock-card__explain--quiet {
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fcd34d;
+}
+
 .clock-card__flag svg {
   flex-shrink: 0;
   margin-top: 2px;

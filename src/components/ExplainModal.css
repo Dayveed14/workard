@@ -1,0 +1,59 @@
+.explain__context {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.explain__context strong {
+  color: var(--text);
+}
+
+.explain__choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.explain__choice {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--gray);
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.explain__choice span {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.explain__choice svg {
+  color: var(--muted);
+}
+
+.explain__choice.is-on {
+  border-color: var(--blue);
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.explain__choice.is-on svg {
+  color: var(--blue);
+}
+
+.explain__deadline {
+  margin: 8px 0 14px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+@media (max-width: 420px) {
+  .explain__choices {
+    grid-template-columns: 1fr;
+  }
+}

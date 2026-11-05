@@ -7,11 +7,35 @@ import Badge from '../../../components/Badge.jsx';
 import EmptyState from '../../../components/EmptyState.jsx';
 import CustomerModal from '../../../components/CustomerModal.jsx';
 import FollowUpList from '../../../components/FollowUpList.jsx';
+import SalesDashboard from '../../../components/SalesDashboard.jsx';
 import { useApi } from '../../../hooks/useApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { toQuery } from '../../../api/client.js';
 import { CUSTOMER_STAGES, formatDate, formatMoney, todayString } from '../../../utils/format.js';
 import './Customers.css';
+
+// How many customers are in each stage — click one to filter the list
+function StageChips({ counts, active, onChange }) {
+  if (!counts) return null;
+  const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
+  const chips = [['', 'All', total], ...Object.entries(CUSTOMER_STAGES).map(([v, l]) => [v, l, counts[v] || 0])];
+  return (
+    <div className="stage-chips" role="group" aria-label="Filter by stage">
+      {chips.map(([value, label, count]) => (
+        <button
+          key={value || 'all'}
+          type="button"
+          className={`stage-chip stage-chip--${value || 'all'} ${active === value ? 'is-on' : ''}`}
+          aria-pressed={active === value}
+          onClick={() => onChange(active === value ? '' : value)}
+        >
+          <strong>{count}</strong>
+          <span>{label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
 
 function CustomerList() {
   const navigate = useNavigate();
@@ -35,16 +59,14 @@ function CustomerList() {
           aria-label="Search customers"
         />
         <button type="submit" className="btn btn--outline" aria-label="Search"><Search size={18} /></button>
-        <select className="field__input" value={filters.stage} onChange={(e) => setFilter('stage', e.target.value)} aria-label="Stage">
-          <option value="">All stages</option>
-          {Object.entries(CUSTOMER_STAGES).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-        </select>
         {can('customers.manage') && (
           <button type="button" className="btn btn--primary" onClick={() => setAdding(true)}>
             <Plus size={18} /> Add customer
           </button>
         )}
       </form>
+
+      <StageChips counts={data?.stageCounts} active={filters.stage} onChange={(stage) => setFilter('stage', stage)} />
 
       <div className="card">
         {loading && <div className="page-loader"><span className="page-loader__spinner" /></div>}
@@ -107,6 +129,7 @@ export default function Customers() {
 
   const tabs = [
     { id: 'list', label: 'Customers' },
+    { id: 'sales', label: 'Sales' },
     { id: 'follow-ups', label: 'Follow-ups', count: followUps?.filter((f) => f.follow_up_on <= todayString()).length },
     { id: 'cases', label: 'Enquiries & complaints', count: cases?.length },
   ];
@@ -117,6 +140,7 @@ export default function Customers() {
       <PageHeader title="Customers" subtitle="Leads, prospects and customers — with every conversation in one place." />
       <Tabs tabs={tabs} active={tab} onChange={(id) => setParams({ tab: id })} />
       {tab === 'list' && <CustomerList />}
+      {tab === 'sales' && <SalesDashboard />}
       {tab === 'follow-ups' && <div className="card"><FollowUpList items={followUps} onChange={reloadFollowUps} /></div>}
       {tab === 'cases' && <div className="card"><FollowUpList items={cases} mode="cases" onChange={reloadCases} /></div>}
     </>

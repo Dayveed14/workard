@@ -23,3 +23,15 @@
   color: var(--navy);
   font-size: 1.05rem;
 }
+
+.month-att__notes {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  font-size: 0.88rem;
+}
+
+.month-att__said {
+  color: var(--text);
+  font-style: italic;
+}

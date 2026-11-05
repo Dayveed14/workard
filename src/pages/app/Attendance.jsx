@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { BarChart3, Check, Flag, MapPin, ShieldCheck, Wifi, X } from 'lucide-react';
+import { BarChart3, Check, Flag, Hourglass, MapPin, ShieldCheck, Wifi, X } from 'lucide-react';
 import PageHeader from '../../components/PageHeader.jsx';
 import Tabs from '../../components/Tabs.jsx';
 import ClockCard from '../../components/ClockCard.jsx';
@@ -15,7 +15,7 @@ import { api } from '../../api/client.js';
 import { useApi } from '../../hooks/useApi.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
-import { formatDate, formatTime, fullName, monthLabel, todayString } from '../../utils/format.js';
+import { EXPLANATION_LABELS, formatDate, formatTime, fullName, monthLabel, timeLeft, todayString } from '../../utils/format.js';
 import './Attendance.css';
 
 // Monthly adherence for everyone the viewer can see — worst first, so the people
@@ -162,7 +162,48 @@ function Register() {
   );
 }
 
-// Clock-ins that failed the location / Wi-Fi check
+// Clock-ins that failed the location / Wi-Fi check.
+// The employee gets 24 hours to give their side; then it is "ready" for a decision.
+// Your own clock-ins never appear here.
+function FlagRow({ r, onReview }) {
+  const ready = r.stage === 'ready';
+  const response = r.explanation_response || (ready ? 'no_response' : null);
+  return (
+    <li>
+      <div className="person">
+        <Avatar name={fullName(r)} size={36} />
+        <span>
+          <strong>{fullName(r)}</strong>
+          <span>{formatDate(r.work_date)} at {formatTime(r.clock_in_at)} · {r.branch_name || 'No branch'}</span>
+        </span>
+      </div>
+      <div className="att__flag-body">
+        <p className="att__reason">{r.flag_reason}</p>
+        {ready ? (
+          <div className={`att__said att__said--${response}`}>
+            <strong>{EXPLANATION_LABELS[response]}</strong>
+            {r.explanation_reason && <p>“{r.explanation_reason}”</p>}
+          </div>
+        ) : (
+          <p className="att__waiting">
+            <Hourglass size={14} /> Waiting for {r.first_name} to explain · {timeLeft(r.explain_deadline) || 'any moment now'}
+          </p>
+        )}
+      </div>
+      {ready && (
+        <div className="row-actions">
+          <button type="button" className="btn btn--outline btn--sm" onClick={() => onReview({ record: r, decision: 'rejected' })}>
+            <X size={16} /> Reject
+          </button>
+          <button type="button" className="btn btn--success btn--sm" onClick={() => onReview({ record: r, decision: 'approved' })}>
+            <Check size={16} /> Approve
+          </button>
+        </div>
+      )}
+    </li>
+  );
+}
+
 function Flagged({ onReviewed }) {
   const toast = useToast();
   const { data, loading, reload } = useApi('/api/attendance/flagged');
@@ -184,45 +225,50 @@ function Flagged({ onReviewed }) {
   if (!data?.length) {
     return (
       <div className="card">
-        <EmptyState icon={ShieldCheck} title="Nothing to review" text="Clock-ins that fail the location or office Wi-Fi check will appear here." />
+        <EmptyState icon={ShieldCheck} title="Nothing to review" text="Clock-ins that fail the location or office Wi-Fi check will appear here once the employee has explained (or 24 hours pass)." />
       </div>
     );
   }
 
+  const ready = data.filter((r) => r.stage === 'ready');
+  const waiting = data.filter((r) => r.stage !== 'ready');
+
   return (
-    <div className="card">
-      <ul className="att__flagged">
-        {data.map((r) => (
-          <li key={r.id}>
-            <div className="person">
-              <Avatar name={fullName(r)} size={36} />
-              <span>
-                <strong>{fullName(r)}</strong>
-                <span>{formatDate(r.work_date)} at {formatTime(r.clock_in_at)} · {r.branch_name || 'No branch'}</span>
-              </span>
-            </div>
-            <p className="att__reason">{r.flag_reason}</p>
-            <div className="row-actions">
-              <button type="button" className="btn btn--outline btn--sm" onClick={() => setReview({ record: r, decision: 'rejected' })}>
-                <X size={16} /> Reject
-              </button>
-              <button type="button" className="btn btn--success btn--sm" onClick={() => setReview({ record: r, decision: 'approved' })}>
-                <Check size={16} /> Approve
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <>
+      <section className="card att__flag-group">
+        <header className="card__header">
+          <h2>Ready for your decision <span className="att__count">{ready.length}</span></h2>
+        </header>
+        {ready.length === 0 ? (
+          <p className="card__body muted">Nothing yet — flags land here when the employee explains, or after 24 hours.</p>
+        ) : (
+          <ul className="att__flagged">{ready.map((r) => <FlagRow key={r.id} r={r} onReview={setReview} />)}</ul>
+        )}
+      </section>
+
+      {waiting.length > 0 && (
+        <section className="card att__flag-group">
+          <header className="card__header">
+            <h2>Waiting for the employee <span className="att__count">{waiting.length}</span></h2>
+          </header>
+          <ul className="att__flagged">{waiting.map((r) => <FlagRow key={r.id} r={r} />)}</ul>
+        </section>
+      )}
+
       {review && (
         <ReviewModal
           title={review.decision === 'approved' ? 'Approve clock-in' : 'Reject clock-in'}
           decision={review.decision}
-          summary={`${fullName(review.record)} — ${review.record.flag_reason}`}
+          summary={
+            review.decision === 'approved'
+              ? `${fullName(review.record)} will count as present on ${formatDate(review.record.work_date)}.`
+              : `${fullName(review.record)} will count as absent on ${formatDate(review.record.work_date)}.`
+          }
           onSubmit={submit}
           onClose={() => setReview(null)}
         />
       )}
-    </div>
+    </>
   );
 }
 
@@ -234,7 +280,7 @@ export default function Attendance() {
   const tabs = [
     ...(employee ? [{ id: 'mine', label: 'My attendance' }] : []),
     ...(can('attendance.view') ? [{ id: 'register', label: 'Daily register' }, { id: 'monthly', label: 'Monthly' }] : []),
-    ...(can('attendance.review') ? [{ id: 'flagged', label: 'Flagged', count: flagged?.length }] : []),
+    ...(can('attendance.review') ? [{ id: 'flagged', label: 'Flagged', count: flagged?.filter((r) => r.stage === 'ready').length }] : []),
   ];
   const tab = tabs.some((t) => t.id === params.get('tab')) ? params.get('tab') : tabs[0]?.id;
 

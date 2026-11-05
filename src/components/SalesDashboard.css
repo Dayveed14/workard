@@ -1,0 +1,262 @@
+.sales__toolbar select {
+  width: auto;
+}
+
+.sales__title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.sales__sub {
+  margin: 2px 0 16px;
+  font-size: 0.85rem;
+}
+
+.sales__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* ===== Headline tiles ===== */
+.sales-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sales-tile {
+  display: grid;
+  gap: 2px;
+  padding: 16px 18px;
+  border: 1px solid var(--gray);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.sales-tile span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.sales-tile strong {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  line-height: 1.15;
+  color: var(--navy);
+}
+
+.sales-tile small {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.sales-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 16px;
+}
+
+.sales-grid__wide {
+  grid-column: 1 / -1;
+}
+
+/* ===== Funnel ===== */
+.sales-funnel {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sales-funnel li {
+  display: grid;
+  grid-template-columns: 130px 1fr 70px;
+  align-items: center;
+  gap: 12px;
+}
+
+.sales-funnel__label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.sales-funnel__track {
+  height: 14px;
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.sales-funnel__bar {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 4px;
+}
+
+.sales-funnel__value {
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.sales-funnel__value span {
+  color: var(--muted);
+}
+
+.sales-funnel li.sales-funnel__open {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ===== Monthly grouped bars ===== */
+.sales-bars__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-bottom: 12px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.sales-bars__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sales-bars__legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.sales-bars__plot {
+  position: relative;
+  padding-left: 28px;
+}
+
+.sales-bars__grid {
+  position: absolute;
+  inset: 0 0 auto 28px;
+}
+
+.sales-bars__grid span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #eef2f6;
+}
+
+.sales-bars__grid em {
+  position: absolute;
+  left: -28px;
+  top: -8px;
+  width: 22px;
+  text-align: right;
+  font-style: normal;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.sales-bars__groups {
+  position: relative;
+  display: flex;
+  gap: 8px;
+}
+
+.sales-bars__group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sales-bars__marks {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+}
+
+.sales-bars__bar {
+  position: relative;
+  width: 100%;
+  max-width: 16px;
+  min-height: 0;
+  border-radius: 4px 4px 0 0;
+  transition: opacity 0.15s;
+}
+
+.sales-bars__bar.is-dim {
+  opacity: 0.35;
+}
+
+.sales-bars__bar::after {
+  /* bigger hover target than the bar itself */
+  content: '';
+  position: absolute;
+  inset: -6px -2px 0;
+}
+
+.sales-bars__tip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  z-index: 2;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.sales-bars__month {
+  padding-top: 6px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* ===== Conversion by source ===== */
+.sales-conv {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sales-conv__track {
+  width: 80px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--gray);
+  overflow: hidden;
+}
+
+.sales-conv__track span {
+  display: block;
+  height: 100%;
+  background: var(--stage-customer);
+}
+
+@media (max-width: 900px) {
+  .sales-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sales-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .sales-funnel li {
+    grid-template-columns: 100px 1fr 56px;
+  }
+}

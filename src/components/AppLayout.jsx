@@ -184,6 +184,12 @@ export default function AppLayout() {
         </header>
 
         <main className="app__content">
+          {role?.isOwner && subscription?.status === 'trial' && location.pathname !== '/billing' && (
+            <div className="app__renew">
+              {subscription.daysLeft + 1} day{subscription.daysLeft === 0 ? '' : 's'} left of your free {subscription.planName} trial.{' '}
+              <Link to="/billing">Choose a plan</Link>
+            </div>
+          )}
           {renewSoon && location.pathname !== '/billing' && (
             <div className="app__renew">
               {subscription.status === 'grace'

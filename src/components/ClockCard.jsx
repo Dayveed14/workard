@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, LogIn, LogOut, MapPin, Wifi } from 'lucide-react';
+import { AlertTriangle, LogIn, LogOut, MapPin, MessageSquare, Wifi } from 'lucide-react';
+import ExplainModal from './ExplainModal.jsx';
 import { api } from '../api/client.js';
 import { useApi } from '../hooks/useApi.js';
 import { useToast } from '../context/ToastContext.jsx';
-import { formatHours, formatTime, shortTime } from '../utils/format.js';
+import { explainDeadline, formatDate, formatHours, formatTime, shortTime, timeLeft } from '../utils/format.js';
 import './ClockCard.css';
 
 // Asks the browser for the device location. Resolves with null if refused or unavailable.
@@ -28,6 +29,7 @@ export default function ClockCard({ onChange }) {
   const { data, loading, error, reload } = useApi('/api/me/attendance/today');
   const [busy, setBusy] = useState(false);
   const [now, setNow] = useState(new Date());
+  const [explaining, setExplaining] = useState(null); // the record being explained
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 30000);
@@ -43,7 +45,10 @@ export default function ClockCard({ onChange }) {
     );
   }
 
-  const { record, branch } = data;
+  const { record, branch, toExplain = [] } = data;
+  // Older flags (e.g. yesterday's) still waiting for the employee's side
+  const olderToExplain = toExplain.filter((r) => r.id !== record?.id);
+  const todayLeft = record?.review_status === 'pending' ? timeLeft(explainDeadline(record), now) : null;
 
   const clockIn = async () => {
     setBusy(true);
@@ -82,6 +87,7 @@ export default function ClockCard({ onChange }) {
     : record?.minutes_worked;
 
   return (
+    <>
     <div className="clock-card">
       <div className="clock-card__time">
         <span>{now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
@@ -114,10 +120,44 @@ export default function ClockCard({ onChange }) {
           </ul>
         )}
         {record?.review_status === 'pending' && (
-          <p className="clock-card__flag">
-            <AlertTriangle size={16} /> Flagged for review: {record.flag_reason}
-          </p>
+          <div className="clock-card__flag">
+            <AlertTriangle size={16} />
+            <div>
+              <p>Flagged for review: {record.flag_reason}</p>
+              {record.explanation_response ? (
+                <p className="clock-card__said">
+                  You {record.explanation_response === 'dispute' ? 'disputed it' : 'explained'}: “{record.explanation_reason}” — waiting for your manager.
+                </p>
+              ) : todayLeft ? (
+                <button type="button" className="clock-card__explain" onClick={() => setExplaining(record)}>
+                  <MessageSquare size={14} /> Explain · {todayLeft}
+                </button>
+              ) : (
+                <p className="clock-card__said">Sent to your manager without your explanation.</p>
+              )}
+            </div>
+          </div>
         )}
+        {record?.is_late === 1 && !record.is_flagged && (
+          record.explanation_reason ? (
+            <p className="clock-card__note">Your reason for being late: “{record.explanation_reason}”</p>
+          ) : (
+            <button type="button" className="clock-card__explain clock-card__explain--quiet" onClick={() => setExplaining(record)}>
+              <MessageSquare size={14} /> Add a reason for being late
+            </button>
+          )
+        )}
+        {olderToExplain.map((r) => (
+          <div key={r.id} className="clock-card__flag">
+            <AlertTriangle size={16} />
+            <div>
+              <p>Your clock-in on {formatDate(r.work_date)} was flagged: {r.flag_reason}</p>
+              <button type="button" className="clock-card__explain" onClick={() => setExplaining(r)}>
+                <MessageSquare size={14} /> Explain · {timeLeft(r.explain_deadline, now) || 'time’s up'}
+              </button>
+            </div>
+          </div>
+        ))}
         {record?.review_status === 'rejected' && (
           <p className="clock-card__flag">
             <AlertTriangle size={16} /> Clock-in rejected{record.review_note ? `: ${record.review_note}` : ''}
@@ -154,5 +194,14 @@ export default function ClockCard({ onChange }) {
         )}
       </div>
     </div>
+    {/* Outside the dark card so the modal keeps its normal colours */}
+    {explaining && (
+      <ExplainModal
+        record={explaining}
+        onDone={() => { reload(); onChange?.(); }}
+        onClose={() => setExplaining(null)}
+      />
+    )}
+    </>
   );
 }

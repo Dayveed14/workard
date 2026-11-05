@@ -127,6 +127,7 @@ export const CUSTOMER_STAGES = {
   lead: 'Lead',
   prospect: 'Prospect',
   customer: 'Customer',
+  lost: 'Lost',
   inactive: 'Inactive',
 };
 
@@ -213,4 +214,39 @@ export function scoreLabel(score) {
   if (s >= 2.5) return 'Meets expectations';
   if (s >= 1.5) return 'Needs improvement';
   return 'Unsatisfactory';
+}
+
+// ---------- Flagged clock-ins ----------
+// The employee has 24 hours from clock-in to explain a flag
+export const EXPLAIN_HOURS = 24;
+
+export function explainDeadline(record) {
+  return new Date(new Date(String(record.clock_in_at).replace(' ', 'T')).getTime() + EXPLAIN_HOURS * 3600 * 1000);
+}
+
+// "5h left", "40 min left" or null once it has passed
+export function timeLeft(deadline, now = new Date()) {
+  const minutes = Math.floor((new Date(deadline) - now) / 60000);
+  if (minutes <= 0) return null;
+  return minutes >= 60 ? `${Math.floor(minutes / 60)}h left` : `${minutes} min left`;
+}
+
+export const EXPLANATION_LABELS = {
+  accept: 'Accepted the flag',
+  dispute: 'Disputes the flag',
+  no_response: 'No response in 24 hours',
+};
+
+// ---------- Brand colours ----------
+// Black or white text — whichever reads better on this background colour
+export function textOn(hex) {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || '');
+  if (!m) return '#ffffff';
+  const [r, g, b] = m.slice(1).map((h) => {
+    const c = parseInt(h, 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  // contrast against white vs against near-black
+  return (1.05 / (luminance + 0.05)) >= ((luminance + 0.05) / 0.0625) ? '#ffffff' : '#0f172a';
 }

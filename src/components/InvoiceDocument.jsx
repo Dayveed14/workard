@@ -1,6 +1,6 @@
 import Badge from './Badge.jsx';
 import Logo from './Logo.jsx';
-import { formatDate, formatMoney } from '../utils/format.js';
+import { formatDate, formatDateTime, formatMoney, textOn } from '../utils/format.js';
 import './InvoiceDocument.css';
 
 // The invoice as the customer sees it. Used inside the app AND on the public link,
@@ -8,16 +8,20 @@ import './InvoiceDocument.css';
 export default function InvoiceDocument({ invoice }) {
   const { business } = invoice;
   const hasBank = business?.bankName || business?.accountNumber;
+  const brand = business?.brandColor;
+  const hasSignature = business?.signatureUrl || business?.signatoryName;
+  const accepted = invoice.acceptance;
 
   return (
-    <article className="invoice-doc">
+    <article className={`invoice-doc ${brand ? 'invoice-doc--branded' : ''}`} style={brand ? { '--brand': brand, '--brand-text': textOn(brand) } : undefined}>
       <header className="invoice-doc__top">
-        <div>
+        <div className="invoice-doc__brand">
+          {business?.logoUrl && <img className="invoice-doc__logo" src={business.logoUrl} alt={`${business.name} logo`} />}
           <h2 className="invoice-doc__business">{business?.name}</h2>
+        </div>
+        <div className="invoice-doc__heading">
           <span className="invoice-doc__label">Invoice</span>
           <strong className="invoice-doc__number">{invoice.invoice_number}</strong>
-        </div>
-        <div className="invoice-doc__status">
           <Badge status={invoice.display_status} />
         </div>
       </header>
@@ -102,6 +106,26 @@ export default function InvoiceDocument({ invoice }) {
           )}
         </dl>
       </section>
+
+      {(hasSignature || accepted) && (
+        <section className="invoice-doc__signs">
+          {hasSignature ? (
+            <div className="invoice-doc__sign">
+              <div className="invoice-doc__sign-img">{business.signatureUrl && <img src={business.signatureUrl} alt="Signature" />}</div>
+              <strong>{business.signatoryName || business.name}</strong>
+              <span>{business.signatoryTitle || 'Authorised signature'}</span>
+            </div>
+          ) : <span />}
+          {accepted && (
+            <div className="invoice-doc__sign invoice-doc__sign--customer">
+              <div className="invoice-doc__sign-img"><img src={accepted.signature} alt={`Signed by ${accepted.name}`} /></div>
+              <strong>Accepted by {accepted.name}</strong>
+              <span>{formatDateTime(accepted.acceptedAt)}</span>
+              {accepted.note && <p className="invoice-doc__sign-note">“{accepted.note}”</p>}
+            </div>
+          )}
+        </section>
+      )}
 
       {business?.footerNote && <p className="invoice-doc__footer">{business.footerNote}</p>}
       <p className="invoice-doc__powered">

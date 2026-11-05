@@ -7,6 +7,7 @@ import OtpStep from '../components/OtpStep.jsx';
 import Field from '../components/Field.jsx';
 import PasswordRules, { passwordIsValid } from '../components/PasswordRules.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
+import { api } from '../api/client.js';
 import { PLANS } from '../config/plans.js';
 import { formatMoney } from '../utils/format.js';
 import './Register.css';
@@ -23,6 +24,12 @@ export default function Register() {
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [challenge, setChallenge] = useState(null);
+  // Is billing switched on (server: BILLING_ENABLED)? Off → no plan to choose, Workard is free.
+  const [billing, setBilling] = useState({ enabled: false, trialDays: 14 });
+
+  useEffect(() => {
+    api('/api/billing/config').then(setBilling).catch(() => {});
+  }, []);
 
   // /signup?plan=starter (from the home page pricing) picks that plan.
   // Read after the first render so the prerendered page and the browser match.
@@ -63,7 +70,7 @@ export default function Register() {
           phone: form.phone.trim(),
           size: form.size,
           password: form.password,
-          plan: form.plan,
+          plan: billing.enabled ? form.plan : undefined,
         })
       );
     } catch (err) {
@@ -74,10 +81,10 @@ export default function Register() {
     }
   };
 
-  // Verified → straight to payment for the chosen plan
+  // Verified → straight into the app (free, or on the free trial — they pay later from Billing)
   const onVerify = async (code) => {
     await verifyOtp(challenge.challengeToken, code);
-    navigate(`/billing?plan=${form.plan}`, { replace: true });
+    navigate('/dashboard', { replace: true });
   };
 
   if (challenge) {
@@ -103,7 +110,11 @@ export default function Register() {
   return (
     <AuthLayout
       title="Create your account"
-      subtitle="Choose a plan, set up your organisation, then pay securely with Paystack."
+      subtitle={
+        billing.enabled
+          ? `Try any plan free for ${billing.trialDays} days — no card needed. Pay yearly when you’re ready.`
+          : 'Set up your organisation in a minute. Workard is free during early access.'
+      }
       footer={
         <>
           Already have an account? <Link to="/login">Log in</Link>
@@ -117,8 +128,9 @@ export default function Register() {
           </div>
         )}
 
+        {billing.enabled && (
         <fieldset className="plan-pick">
-          <legend className="field__label">Plan (paid yearly)</legend>
+          <legend className="field__label">Plan — {billing.trialDays} days free, then paid yearly</legend>
           {PLANS.map((p) => (
             <label key={p.id} className={`plan-pick__option ${form.plan === p.id ? 'is-on' : ''}`}>
               <input type="radio" name="plan" value={p.id} checked={form.plan === p.id} onChange={onChange} />
@@ -135,6 +147,7 @@ export default function Register() {
             {PLANS.find((p) => p.id === form.plan)?.items.slice(0, 3).join(' · ')}. <Link to="/#pricing">Compare plans</Link>
           </p>
         </fieldset>
+        )}
 
         <Field label="Full name" name="fullName" error={errors.fullName}>
           {input('fullName', { placeholder: 'Ada Okafor', autoComplete: 'name' })}
