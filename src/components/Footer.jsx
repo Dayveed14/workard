@@ -44,6 +44,7 @@ export default function Footer() {
       </div>
       <div className="container footer__bottom">
         <p>© {year} Workard. All rights reserved.</p>
+        <p>Made for businesses in Nigeria 🇳🇬</p>
       </div>
     </footer>
   );

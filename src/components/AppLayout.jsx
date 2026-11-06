@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Megaphone,
+  BarChart3,
   Video,
   FolderKanban,
   FolderOpen,
@@ -55,6 +56,7 @@ const NAV = [
 
   { section: 'Manage' },
   { to: '/employees', label: 'Employees', icon: Users, anyOf: ['employees.view'] },
+  { to: '/performance', label: 'Team performance', icon: BarChart3, anyOf: ['reviews.view'], feature: 'reviews' },
   { to: '/onboarding', label: 'Onboarding', icon: UserPlus, anyOf: ['onboarding.manage'] },
   { to: '/invoices', label: 'Invoices', icon: FileText, anyOf: ['invoices.view'], feature: 'invoices' },
   { to: '/finance', label: 'Finance', icon: Wallet, anyOf: ['finance.view'], feature: 'finance' },

@@ -34,6 +34,7 @@ import PayslipView from './pages/app/payroll/PayslipView.jsx';
 import Tasks from './pages/app/tasks/Tasks.jsx';
 import TaskDetail from './pages/app/tasks/TaskDetail.jsx';
 import Reviews from './pages/app/reviews/Reviews.jsx';
+import Performance from './pages/app/performance/Performance.jsx';
 import ReviewDetail from './pages/app/reviews/ReviewDetail.jsx';
 import Announcements from './pages/app/announcements/Announcements.jsx';
 import Requests from './pages/app/requests/Requests.jsx';
@@ -123,6 +124,7 @@ export default function App() {
           <Route path="/projects" element={<RequireFeature feature="tasks"><Projects /></RequireFeature>} />
           <Route path="/projects/:id" element={<RequireFeature feature="tasks"><ProjectDetail /></RequireFeature>} />
           <Route path="/reviews" element={<RequireFeature feature="reviews"><Reviews /></RequireFeature>} />
+          <Route path="/performance" element={<RequirePermission anyOf={['reviews.view']}><RequireFeature feature="reviews"><Performance /></RequireFeature></RequirePermission>} />
           <Route path="/reviews/:id" element={<RequireFeature feature="reviews"><ReviewDetail /></RequireFeature>} />
 
           <Route
