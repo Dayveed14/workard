@@ -112,7 +112,7 @@ export default function AppLayout() {
     <div className={`app ${menuOpen ? 'app--menu-open' : ''}`}>
       <aside className="sidebar" aria-label="Main navigation">
         <div className="sidebar__brand">
-          <Link to="/dashboard">
+          <Link to="/">
             <Logo variant="light" size={26} />
           </Link>
           <button type="button" className="sidebar__close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
