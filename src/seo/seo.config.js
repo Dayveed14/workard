@@ -47,6 +47,10 @@ const APP_TITLES = {
   '/reviews': 'Performance reviews',
   '/i': 'Invoice',
   '/invite': 'Accept invitation',
+  '/meetings': 'Meetings',
+  '/projects': 'Projects',
+  '/resources': 'Resources',
+  '/requests': 'Requests',
 };
 
 export const notFound = {
