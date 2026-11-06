@@ -34,7 +34,7 @@ export default function PeoplePicker({ people, value, onChange, meId }) {
           <li key={p.id}>
             <button type="button" className={value.includes(p.id) ? 'is-on' : ''} onClick={() => toggle(p.id)} aria-pressed={value.includes(p.id)}>
               <Avatar name={`${p.first_name} ${p.last_name}`} src={p.photo_url} size={24} />
-              <span>{name(p)}{p.job_title && <small> · {p.job_title}</small>}</span>
+              <span className="people-picker__label">{name(p)}{p.job_title && <small> · {p.job_title}</small>}</span>
               {value.includes(p.id) && <Check size={15} />}
             </button>
           </li>

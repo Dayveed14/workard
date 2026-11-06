@@ -52,7 +52,8 @@ const APP_TITLES = {
   '/resources': 'Resources',
   '/requests': 'Requests',
   '/announcements': 'Announcements',
-  '/performance': 'Performance',
+  '/performance': 'Team performance',
+  '/feedback': 'Feedback', // the private follow-up link for anonymous feedback
 };
 
 export const notFound = {
