@@ -3,6 +3,7 @@ import { Check, CheckSquare, MessageSquare, Repeat, ListTodo } from 'lucide-reac
 import Badge from './Badge.jsx';
 import EmptyState from './EmptyState.jsx';
 import Avatar from './Avatar.jsx';
+import AvatarStack from './AvatarStack.jsx';
 import { api } from '../api/client.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
@@ -35,7 +36,7 @@ export default function TaskList({ tasks, showAssignee = false, onChange, emptyT
     <ul className={`task-list ${compact ? 'task-list--compact' : ''}`}>
       {tasks.map((t) => {
         const due = dueLabel(t.due_date, t.status);
-        const mine = t.assigned_employee_id === employee?.id;
+        const mine = (t.assignees || []).some((a) => a.id === employee?.id) || t.assigned_employee_id === employee?.id;
         const closed = t.status === 'done' || t.status === 'cancelled';
         return (
           <li key={t.id} className={closed ? 'is-closed' : ''} onClick={() => navigate(`/tasks/${t.id}`)}>
@@ -57,9 +58,11 @@ export default function TaskList({ tasks, showAssignee = false, onChange, emptyT
               <span className="task-list__meta">
                 {showAssignee && (
                   <span className="task-list__who">
-                    <Avatar name={`${t.first_name} ${t.last_name}`} src={t.photo_url} size={18} /> {t.first_name} {t.last_name}
+                    {t.assignees?.length ? <AvatarStack people={t.assignees} size={18} showNames /> : <><Avatar name={`${t.first_name} ${t.last_name}`} src={t.photo_url} size={18} /> {t.first_name} {t.last_name}</>}
                   </span>
                 )}
+                {!showAssignee && t.assignees?.length > 1 && <AvatarStack people={t.assignees} size={18} />}
+                {t.project_name && <span className="task-list__project" style={{ '--project': t.project_color }}>{t.project_name}</span>}
                 {t.customer_name && <span>{t.customer_name}</span>}
                 {Number(t.checklist_total) > 0 && (
                   <span><CheckSquare size={13} /> {t.checklist_done}/{t.checklist_total}</span>

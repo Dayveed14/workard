@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -21,7 +22,8 @@ import {
   ListChecks,
 } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
-import { PLANS } from '../config/plans.js';
+import { PLANS, perMonthKobo } from '../config/plans.js';
+import IntervalToggle from '../components/IntervalToggle.jsx';
 import { formatMoney } from '../utils/format.js';
 import Footer from '../components/Footer.jsx';
 import Logo from '../components/Logo.jsx';
@@ -106,13 +108,14 @@ const insights = [
 ];
 
 // Pricing comes from the same list the sign-up page uses (src/config/plans.js)
-const plans = PLANS.map((p) => ({
-  ...p,
-  price: formatMoney(p.priceKobo, { decimals: false }),
-  period: 'per year',
-  text: p.tagline,
-  cta: `Choose ${p.name}`,
-}));
+const plansFor = (interval) =>
+  PLANS.map((p) => ({
+    ...p,
+    price: formatMoney(perMonthKobo(p, interval), { decimals: false }),
+    period: interval === 'yearly' ? `per month · ${formatMoney(p.prices.yearly, { decimals: false })} billed yearly` : 'per month',
+    text: p.tagline,
+    cta: `Choose ${p.name}`,
+  }));
 
 function DashboardPreview() {
   return (
@@ -186,6 +189,7 @@ function DashboardPreview() {
 }
 
 export default function Home() {
+  const [interval, setInterval] = useState('monthly');
   return (
     <>
       <Navbar />
@@ -346,11 +350,12 @@ export default function Home() {
           <div className="container">
             <div className="section__head">
               <p className="eyebrow">Pricing</p>
-              <h2>One yearly price. Grow into it.</h2>
-              <p>Simple plans for businesses of every size.</p>
+              <h2>Pay monthly. Grow into it.</h2>
+              <p>Simple plans for businesses of every size — or pay yearly and save.</p>
+              <IntervalToggle value={interval} onChange={setInterval} />
             </div>
             <div className="plans">
-              {plans.map((p) => (
+              {plansFor(interval).map((p) => (
                 <article key={p.name} className={`plan ${p.featured ? 'plan--featured' : ''}`}>
                   {p.featured && <span className="plan__badge">Most popular</span>}
                   <h3>{p.name}</h3>

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import {
+  Megaphone,
+  Video,
   AlertTriangle,
   ArrowDownCircle,
   ArrowRight,
@@ -25,7 +27,9 @@ import Badge from '../../components/Badge.jsx';
 import EmptyState from '../../components/EmptyState.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useApi } from '../../hooks/useApi.js';
-import { formatDate, formatMoneyShort, formatTime, fullName } from '../../utils/format.js';
+import { formatDate, formatMoneyShort, formatTime, fullName, timeAgo, todayString } from '../../utils/format.js';
+import { JoinButton } from './meetings/Meetings.jsx';
+import { joinState } from './meetings/meetingTime.js';
 import FollowUpList from '../../components/FollowUpList.jsx';
 import TaskList from '../../components/TaskList.jsx';
 import './Dashboard.css';
@@ -203,6 +207,83 @@ function TeamOverview() {
   );
 }
 
+// Today's meetings, with a Join button when the room is open
+function TodaysMeetings() {
+  const today = todayString();
+  const { data } = useApi(`/api/meetings?from=${today}&to=${today}`);
+  const upcoming = (data || []).filter((m) => joinState(m).state !== 'over');
+  if (!upcoming.length) return null;
+  return (
+    <section className="card dash__news dash__meetings">
+      <header className="card__header">
+        <h2><Video size={18} /> Today’s meetings</h2>
+        <Link to="/meetings" className="link-btn">Calendar <ArrowRight size={14} /></Link>
+      </header>
+      <ul className="dash__list">
+        {upcoming.map((m) => (
+          <li key={`${m.meetingId}-${m.date}`}>
+            <Link to={`/meetings/${m.meetingId}?date=${m.date}`} className="dash__assigned-link">
+              <strong>{m.startsAt.slice(11, 16)} · {m.title}</strong>
+              <span className="muted">{m.audienceName || 'Invited people'} · {m.durationMinutes} min{m.isStandup ? ' · stand-up' : ''}</span>
+            </Link>
+            <JoinButton occ={m} small />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+// New announcements you haven't opened yet
+function NewAnnouncements() {
+  const { data } = useApi('/api/announcements/unseen');
+  if (!data?.length) return null;
+  return (
+    <section className="card dash__news">
+      <header className="card__header">
+        <h2><Megaphone size={18} /> New announcements</h2>
+        <Link to="/announcements" className="link-btn">Open <ArrowRight size={14} /></Link>
+      </header>
+      <ul className="dash__list">
+        {data.map((a) => (
+          <li key={a.id}>
+            <Link to={`/announcements#post-${a.id}`} className="dash__assigned-link">
+              <strong>{a.title}</strong>
+              <span className="muted">{a.author_name} → {a.audience_name} · {timeAgo(a.created_at)}</span>
+            </Link>
+            {a.needs_ack === 1 && <span className="dash__ack">Please confirm</span>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+// Leads & customers someone gave you — and who, so you know who to ask
+function AssignedToMe() {
+  const { data } = useApi('/api/customers/assigned-to-me');
+  if (!data?.length) return null;
+  return (
+    <section className="card dash__assigned">
+      <header className="card__header">
+        <h2>Assigned to you</h2>
+        <Link to="/customers" className="link-btn">My customers <ArrowRight size={14} /></Link>
+      </header>
+      <ul className="dash__list">
+        {data.map((c) => (
+          <li key={c.id}>
+            <Link to={`/customers/${c.id}`} className="dash__assigned-link">
+              <strong>{c.name}</strong>
+              <span className="muted">Assigned by {c.assigned_by_name} · {formatDate(c.assigned_at)}</span>
+            </Link>
+            <Badge status={c.stage} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 // Staff who handle customers see what they need to follow up today
 function MyFollowUps() {
   const { data, reload } = useApi('/api/customers/follow-ups');
@@ -296,8 +377,11 @@ export default function Dashboard() {
       />
 
       {employee && <ClockCard />}
+      <TodaysMeetings />
+      <NewAnnouncements />
       {employee && <MyOnboarding />}
       {employee && has('tasks') && <MyTasks withReviews={has('reviews')} />}
+      {employee && has('crm') && can('customers.view') && <AssignedToMe />}
 
       {can('dashboard.view') ? (
         <TeamOverview />

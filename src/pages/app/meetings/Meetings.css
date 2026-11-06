@@ -1,0 +1,320 @@
+.meet__layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.meet-up h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+}
+
+.meet-up__day h3 {
+  margin: 0;
+  padding: 10px 20px 4px;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.meet-up__day ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.meet-up__day li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+}
+
+.meet-up__item {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.meet-up__item:hover strong {
+  color: var(--blue);
+}
+
+.meet-up__time {
+  flex-shrink: 0;
+  width: 46px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.meet-up__text {
+  display: grid;
+  min-width: 0;
+}
+
+.meet-up__text strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meet-up__text small {
+  display: block;
+  overflow: hidden;
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meet-up__text small svg {
+  vertical-align: -1px;
+}
+
+.meet__ended {
+  font-size: 0.8rem;
+}
+
+/* ===== Month calendar ===== */
+.meet-cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gray);
+}
+
+.meet-cal__head h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.meet-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.meet-cal__dow {
+  padding: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.meet-cal__day {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  min-height: 96px;
+  padding: 4px;
+  border-top: 1px solid #f1f5f9;
+  border-left: 1px solid #f1f5f9;
+}
+
+.meet-cal__day.is-out {
+  background: #fafbfc;
+  color: #94a3b8;
+}
+
+.meet-cal__num {
+  justify-self: end;
+  padding: 2px 6px;
+  font-size: 0.78rem;
+}
+
+.meet-cal__day.is-today .meet-cal__num {
+  border-radius: 999px;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+}
+
+.meet-cal__item {
+  padding: 2px 6px;
+  border-left: 3px solid var(--blue);
+  border-radius: 4px;
+  background: var(--blue-50);
+  font-size: 0.72rem;
+  color: #1e3a8a;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meet-cal__item.is-standup {
+  border-left-color: var(--att-ontime);
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.meet-cal__more {
+  padding: 0 6px;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+/* ===== One meeting ===== */
+.meet-detail__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 20px 22px;
+}
+
+.meet-detail__head h1 {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+}
+
+.meet-detail__head p {
+  margin: 4px 0 0;
+}
+
+.meet-detail__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+
+.meet-detail__facts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.meet-detail__agenda {
+  white-space: pre-line;
+}
+
+.meet-detail__warn {
+  flex-basis: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.88rem;
+}
+
+.meet-detail__body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.meet-detail__people {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 14px 20px;
+  list-style: none;
+}
+
+/* ===== The video room ===== */
+.room {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: #0b1220;
+  color: #fff;
+}
+
+.room--message {
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.room__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.room__back,
+.room__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  color: #fff;
+  cursor: pointer;
+}
+
+.room__lk {
+  flex: 1;
+  min-height: 0;
+}
+
+.room__main {
+  display: grid;
+  height: 100%;
+}
+
+.room__main.with-panel {
+  grid-template-columns: 1fr 380px;
+}
+
+.room__video {
+  min-width: 0;
+  min-height: 0;
+}
+
+.room__panel {
+  position: relative;
+  overflow-y: auto;
+  padding: 16px;
+  background: #f8fafc;
+  color: var(--text);
+}
+
+.room__panel-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+@media (max-width: 1000px) {
+  .meet__layout,
+  .meet-detail__body {
+    grid-template-columns: 1fr;
+  }
+
+  .room__main.with-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 45%;
+  }
+}
+
+@media (max-width: 640px) {
+  .meet-cal__day {
+    min-height: 64px;
+  }
+
+  .meet-cal__item {
+    font-size: 0;
+    padding: 0;
+    height: 6px;
+  }
+}

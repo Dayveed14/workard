@@ -207,11 +207,22 @@ export default function TaskDetail() {
         <aside className="task-detail__side">
           <section className="card card__body">
             <dl className="task-detail__facts">
-              <dt>For</dt>
-              <dd className="task-detail__person">
-                <Avatar name={`${task.first_name} ${task.last_name}`} src={task.photo_url} size={26} />
-                <Link to={`/employees/${task.assigned_employee_id}`}>{task.first_name} {task.last_name}</Link>
+              <dt>{task.assignees?.length > 1 ? 'People' : 'For'}</dt>
+              <dd className="task-detail__people">
+                {(task.assignees?.length ? task.assignees : [{ id: task.assigned_employee_id, first_name: task.first_name, last_name: task.last_name, photo_url: task.photo_url, is_lead: true }]).map((a) => (
+                  <span key={a.id} className="task-detail__person">
+                    <Avatar name={`${a.first_name} ${a.last_name}`} src={a.photo_url} size={26} />
+                    <Link to={`/employees/${a.id}`}>{a.first_name} {a.last_name}</Link>
+                    {a.is_lead && task.assignees?.length > 1 && <small className="muted">lead</small>}
+                  </span>
+                ))}
               </dd>
+              {task.project_id && (
+                <>
+                  <dt>Project</dt>
+                  <dd><Link to={`/projects/${task.project_id}`}>{task.project_name}</Link></dd>
+                </>
+              )}
               <dt>Due</dt>
               <dd className={`task-detail__due--${due.tone}`}>{task.due_date ? `${formatDate(task.due_date)}${due.tone !== 'none' ? ` · ${due.text.split(' ·')[0]}` : ''}` : '—'}</dd>
               <dt>Priority</dt>

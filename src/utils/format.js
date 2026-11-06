@@ -250,3 +250,16 @@ export function textOn(hex) {
   // contrast against white vs against near-black
   return (1.05 / (luminance + 0.05)) >= ((luminance + 0.05) / 0.0625) ? '#ffffff' : '#0f172a';
 }
+
+// "just now", "5 min ago", "3 h ago", "yesterday", then the date
+export function timeAgo(value) {
+  if (!value) return '';
+  const then = new Date(String(value).replace(' ', 'T'));
+  const minutes = Math.floor((Date.now() - then) / 60000);
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return `${minutes} min ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} h ago`;
+  if (hours < 48) return 'yesterday';
+  return formatDate(value);
+}

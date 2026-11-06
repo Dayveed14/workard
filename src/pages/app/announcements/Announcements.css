@@ -1,0 +1,251 @@
+.ann {
+  max-width: 760px;
+}
+
+.ann-composer__closed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  border: 1px solid var(--gray);
+  font: inherit;
+  text-align: left;
+  color: var(--muted);
+  cursor: text;
+}
+
+.ann-composer__closed:hover {
+  border-color: var(--blue);
+}
+
+.ann-composer {
+  margin-bottom: 16px;
+}
+
+.ann-composer__options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  font-size: 0.88rem;
+}
+
+.ann-composer__file {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* ===== A post ===== */
+.ann-post {
+  margin-bottom: 16px;
+  padding: 20px 22px 14px;
+}
+
+.ann-post--pinned {
+  border-top: 3px solid var(--blue);
+}
+
+.ann-post__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ann-post__who {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.ann-post__who .muted {
+  font-size: 0.82rem;
+}
+
+.ann-post__group {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ann-post__pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--blue-50);
+  color: #1e40af;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.ann-post__menu {
+  position: relative;
+}
+
+.ann-post__dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 5;
+  display: grid;
+  min-width: 170px;
+  padding: 6px;
+  border: 1px solid var(--gray);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+}
+
+.ann-post__dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  font-size: 0.88rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ann-post__dropdown button:hover {
+  background: var(--surface);
+}
+
+.ann-post__dropdown .is-danger {
+  color: var(--danger);
+}
+
+.ann-post__title {
+  margin: 16px 0 6px;
+  font-size: 1.15rem;
+}
+
+.ann-post__body {
+  margin: 0;
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+.ann-post__file {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.ann-post__file:hover {
+  border-color: var(--blue);
+}
+
+.ann-post__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-top: 14px;
+}
+
+.ann-post__acked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--green-600);
+}
+
+.ann-post__stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+/* ===== Comments ===== */
+.ann-comments {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.ann-comments__more {
+  justify-self: start;
+  font-size: 0.85rem;
+}
+
+.ann-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.ann-comment__bubble {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 0.9rem;
+}
+
+.ann-comment__bubble .muted {
+  font-size: 0.75rem;
+}
+
+.ann-comment__bubble p {
+  margin: 2px 0 0;
+  white-space: pre-line;
+}
+
+.ann-comment__delete {
+  opacity: 0.5;
+}
+
+.ann-comment__delete:hover {
+  opacity: 1;
+}
+
+.ann-comments__form {
+  display: flex;
+  gap: 8px;
+}
+
+.ann__more {
+  display: block;
+  margin: 0 auto 24px;
+}
+
+/* Who has read it */
+.readers__group h3 {
+  margin: 4px 0 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.readers__group ul {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}

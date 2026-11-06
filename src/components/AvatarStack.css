@@ -1,0 +1,28 @@
+.avatar-stack {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.avatar-stack__faces {
+  display: inline-flex;
+}
+
+.avatar-stack__faces > * + * {
+  margin-left: -6px;
+}
+
+.avatar-stack__faces .avatar,
+.avatar-stack__more {
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.avatar-stack__more {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+}

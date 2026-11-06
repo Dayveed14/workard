@@ -219,3 +219,23 @@
 .cprofile__dot--prospect { background: var(--stage-prospect); }
 .cprofile__dot--customer { background: var(--stage-customer); }
 .cprofile__dot--lost { background: var(--stage-lost); }
+
+/* Stage as a small pill-shaped dropdown */
+.cprofile__stage {
+  padding: 3px 26px 3px 10px;
+  border: 1px solid var(--gray);
+  border-left: 4px solid var(--stage, #94a3b8);
+  border-radius: 999px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;
+  appearance: none;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.cprofile__stage--lead { --stage: var(--stage-lead); }
+.cprofile__stage--prospect { --stage: var(--stage-prospect); }
+.cprofile__stage--customer { --stage: var(--stage-customer); }
+.cprofile__stage--lost { --stage: var(--stage-lost); }

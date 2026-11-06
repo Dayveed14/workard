@@ -1,0 +1,93 @@
+.people-picker {
+  display: grid;
+  gap: 8px;
+}
+
+.people-picker__chosen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 30px;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.people-picker__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px 3px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--gray);
+}
+
+.people-picker__chip.is-lead {
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
+.people-picker__chip.is-lead svg:first-child {
+  color: #b45309;
+}
+
+.people-picker__chip button {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.people-picker__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 4px;
+  max-height: 180px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.people-picker__list button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.people-picker__list button:hover {
+  background: var(--surface);
+}
+
+.people-picker__list button.is-on {
+  border-color: var(--blue);
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.people-picker__list button span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.people-picker__list small {
+  color: var(--muted);
+}
+
+.people-picker__list svg {
+  color: var(--blue);
+}

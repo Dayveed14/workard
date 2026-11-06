@@ -14,11 +14,17 @@ export default function PayslipDocument({ p }) {
     ['Bonus', p.bonus_kobo],
   ].filter(([, v]) => n(v) > 0);
 
+  // Loan / salary advance repayments are shown on their own lines
+  const lines = typeof p.breakdown === 'string' ? JSON.parse(p.breakdown || '[]') : p.breakdown || [];
+  const repayments = lines.filter((l) => l.kind === 'repayment');
+  const repaid = repayments.reduce((s, l) => s + n(l.amountKobo), 0);
+
   const deductions = [
     ['PAYE tax', p.paye_kobo],
     ['Pension (employee)', p.pension_employee_kobo],
     ['National Housing Fund', p.nhf_kobo],
-    ['Other deductions', p.other_deductions_kobo],
+    ...repayments.map((l) => [l.label, l.amountKobo]),
+    ['Other deductions', n(p.other_deductions_kobo) - repaid],
     ['One-off deduction', p.one_off_deduction_kobo],
   ].filter(([, v]) => n(v) > 0);
 
@@ -66,8 +72,8 @@ export default function PayslipDocument({ p }) {
           <h3>Deductions</h3>
           <dl>
             {deductions.length === 0 && (<><dt>None</dt><dd>—</dd></>)}
-            {deductions.map(([label, v]) => (
-              <Fragment key={label}><dt>{label}</dt><dd>{formatMoney(v)}</dd></Fragment>
+            {deductions.map(([label, v], i) => (
+              <Fragment key={`${label}-${i}`}><dt>{label}</dt><dd>{formatMoney(v)}</dd></Fragment>
             ))}
             <dt className="payslip__sum">Total deductions</dt>
             <dd className="payslip__sum">{formatMoney(totalDeductions)}</dd>

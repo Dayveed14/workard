@@ -1,0 +1,304 @@
+.req {
+  max-width: 980px;
+}
+
+.req__intro {
+  margin: 0 0 14px;
+  font-size: 0.9rem;
+}
+
+/* ===== "Ask for…" cards ===== */
+.req-ask {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.req-ask__card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--gray);
+  font: inherit;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.req-ask__card:hover:not(:disabled) {
+  border-color: var(--blue);
+}
+
+.req-ask__card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.req-ask__card span:last-child {
+  display: grid;
+  gap: 2px;
+}
+
+.req-ask__card small {
+  color: var(--muted);
+}
+
+.req-ask__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.req-ask__icon--loan {
+  background: var(--blue-50);
+  color: var(--blue);
+}
+
+.req-ask__icon--fb {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+/* ===== Repayment preview ===== */
+.req__plan {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 0.9rem;
+}
+
+.req__plan div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.req__plan dt {
+  color: var(--muted);
+}
+
+.req__plan dd {
+  margin: 0;
+}
+
+.req__plan.is-over {
+  outline: 1px solid var(--danger);
+}
+
+/* ===== Lists ===== */
+.req-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.req-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 14px 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.req-row--click {
+  cursor: pointer;
+}
+
+.req-row--click:hover {
+  background: var(--surface);
+}
+
+.req-row .person {
+  min-width: 200px;
+}
+
+.req-row__main {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+  min-width: 220px;
+}
+
+.req-row__main .muted {
+  font-size: 0.85rem;
+}
+
+.req-row__reason {
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
+.req-row__progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.req-row__bar {
+  width: 140px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--gray);
+  overflow: hidden;
+}
+
+.req-row__bar span {
+  display: block;
+  height: 100%;
+  background: var(--att-ontime);
+}
+
+/* ===== Feedback ===== */
+.fb__types {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.fb__type {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 1.5px solid var(--gray);
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.fb__type.is-on {
+  border-color: var(--blue);
+  background: rgba(37, 99, 235, 0.06);
+  color: var(--text);
+}
+
+.fb__anon {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.fb__anon span {
+  display: grid;
+  gap: 2px;
+}
+
+.fb__anon strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fb__anon small {
+  color: var(--muted);
+}
+
+.fb__link {
+  display: flex;
+  gap: 8px;
+}
+
+.fb__note {
+  font-size: 0.85rem;
+}
+
+.fb__filter {
+  width: auto;
+}
+
+.fb__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.fb__icon--complaint {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.fb__icon--suggestion {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.fb__icon--job {
+  background: var(--blue-50);
+  color: var(--blue);
+}
+
+.fb-thread__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.fb-thread h3 {
+  margin: 12px 0 6px;
+}
+
+.fb-thread__body {
+  margin: 0 0 16px;
+  white-space: pre-line;
+}
+
+.fb-thread__replies {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.fb-thread__replies li {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--blue-50);
+  font-size: 0.9rem;
+}
+
+.fb-thread__replies li.is-sender {
+  background: var(--surface);
+}
+
+.fb-thread__replies p {
+  margin: 4px 0 0;
+  white-space: pre-line;
+}
+
+.fb-thread__actions {
+  margin-top: 10px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 480px) {
+  .fb__types {
+    grid-template-columns: 1fr;
+  }
+}

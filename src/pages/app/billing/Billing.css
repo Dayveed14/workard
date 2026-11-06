@@ -240,3 +240,53 @@
   border-color: #bfdbfe;
   color: #1e40af;
 }
+
+.billing__toggle {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 16px;
+}
+
+.billing__billed {
+  margin: -4px 0 8px;
+  font-size: 0.82rem;
+}
+
+.billing__current-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.billing__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.billing__switch span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.billing__next {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 0;
+  font-size: 0.88rem;
+}
+
+.billing__next .link-btn,
+.billing__notice .link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 6px;
+}

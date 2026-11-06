@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
+  Megaphone,
+  Video,
+  FolderKanban,
+  FolderOpen,
+  HandCoins,
   Banknote,
   Lock,
   UserPlus,
@@ -24,26 +29,36 @@ import {
   Contact,
 } from 'lucide-react';
 import Logo from './Logo.jsx';
+import NotificationBell from './NotificationBell.jsx';
 import Avatar from './Avatar.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import './AppLayout.css';
 
-// Sidebar links. `anyOf` = only shown to people with one of these permissions.
+// Sidebar links, in sections. `anyOf` = only shown to people with one of these permissions.
 // `feature` = the plan must include it; if not, the link shows a lock and opens the plans page.
 const NAV = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/announcements', label: 'Announcements', icon: Megaphone },
+  { to: '/meetings', label: 'Meetings', icon: Video },
   { to: '/attendance', label: 'Attendance', icon: Clock },
   { to: '/leave', label: 'Leave', icon: CalendarDays },
-  { to: '/onboarding', label: 'Onboarding', icon: UserPlus },
+  { to: '/requests', label: 'Requests', icon: HandCoins },
+  { to: '/payslips', label: 'My payslips', icon: Receipt, employeeOnly: true, feature: 'payroll' },
+
+  { section: 'Work' },
   { to: '/tasks', label: 'Tasks', icon: ListChecks, feature: 'tasks' },
+  { to: '/projects', label: 'Projects', icon: FolderKanban, feature: 'tasks' },
+  { to: '/resources', label: 'Team resources', icon: FolderOpen },
   { to: '/reviews', label: 'Reviews', icon: ClipboardCheck, feature: 'reviews' },
-  { to: '/employees', label: 'Employees', icon: Users, anyOf: ['employees.view'] },
   { to: '/customers', label: 'Customers', icon: Contact, anyOf: ['customers.view'], feature: 'crm' },
+
+  { section: 'Manage' },
+  { to: '/employees', label: 'Employees', icon: Users, anyOf: ['employees.view'] },
+  { to: '/onboarding', label: 'Onboarding', icon: UserPlus, anyOf: ['onboarding.manage'] },
   { to: '/invoices', label: 'Invoices', icon: FileText, anyOf: ['invoices.view'], feature: 'invoices' },
   { to: '/finance', label: 'Finance', icon: Wallet, anyOf: ['finance.view'], feature: 'finance' },
   { to: '/payroll', label: 'Payroll', icon: Banknote, anyOf: ['payroll.view'], feature: 'payroll' },
-  { to: '/payslips', label: 'My payslips', icon: Receipt, employeeOnly: true, feature: 'payroll' },
   { to: '/settings', label: 'Settings', icon: Settings, anyOf: ['organization.manage', 'roles.manage', 'audit.view', 'finance.manage', 'payroll.manage', 'payroll.approve', 'reviews.setup'] },
 ];
 
@@ -107,10 +122,13 @@ export default function AppLayout() {
           {locked ? (
             <NavLink to="/billing" className="sidebar__link is-active"><CreditCard size={18} /> Plan & billing</NavLink>
           ) : (
-            NAV.filter((item) => (item.employeeOnly ? employee : !item.anyOf || canAny(...item.anyOf)))
-              .filter((item) => item.to !== '/onboarding' || canAny('onboarding.manage'))
-              .map(({ to, label, icon: Icon, feature }) =>
-                has(feature) ? (
+            NAV.filter((item) => item.section || (item.employeeOnly ? employee : !item.anyOf || canAny(...item.anyOf)))
+              // drop a section heading that has no links under it
+              .filter((item, i, list) => !item.section || (list[i + 1] && !list[i + 1].section))
+              .map(({ to, label, icon: Icon, feature, section }) =>
+                section ? (
+                  <p key={section} className="sidebar__section">{section}</p>
+                ) : has(feature) ? (
                   <NavLink key={to} to={to} className={({ isActive }) => `sidebar__link ${isActive ? 'is-active' : ''}`}>
                     <Icon size={18} /> {label}
                   </NavLink>
@@ -155,6 +173,7 @@ export default function AppLayout() {
             <Menu size={22} />
           </button>
           <span className="topbar__org">{organization?.name}</span>
+          {!locked && <NotificationBell />}
 
           <div className="topbar__user" ref={userMenuRef}>
             <button type="button" className="topbar__user-btn" onClick={() => setUserMenu((o) => !o)} aria-expanded={userMenu}>
@@ -172,9 +191,11 @@ export default function AppLayout() {
                     <UserCircle size={16} /> My profile
                   </Link>
                 )}
-                <Link to="/billing" onClick={() => setUserMenu(false)}>
-                  <CreditCard size={16} /> Plan & billing
-                </Link>
+                {role?.isOwner && (
+                  <Link to="/billing" onClick={() => setUserMenu(false)}>
+                    <CreditCard size={16} /> Plan & billing
+                  </Link>
+                )}
                 <button type="button" onClick={onLogout}>
                   <LogOut size={16} /> Log out
                 </button>

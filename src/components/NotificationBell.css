@@ -1,0 +1,137 @@
+.bell {
+  position: relative;
+  margin-left: auto;
+}
+
+.bell + .topbar__user {
+  margin-left: 8px;
+}
+
+.bell__btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.bell__btn:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.bell__count {
+  position: absolute;
+  top: 4px;
+  right: 3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+}
+
+.bell__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 50;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  border: 1px solid var(--gray);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14);
+  overflow: hidden;
+}
+
+.bell__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gray);
+}
+
+.bell__head .link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+}
+
+.bell__empty {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.bell__list {
+  max-height: 420px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.bell__item {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  border-bottom: 1px solid #f1f5f9;
+  background: none;
+  font: inherit;
+  font-size: 0.88rem;
+  text-align: left;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.bell__item:hover {
+  background: var(--surface);
+}
+
+.bell__item.is-unread {
+  color: var(--text);
+  background: #f8fbff;
+}
+
+.bell__dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+}
+
+.bell__item.is-unread .bell__dot {
+  background: var(--blue);
+}
+
+.bell__text {
+  display: grid;
+  gap: 3px;
+}
+
+.bell__text small {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.bell__text .bell__body {
+  font-size: 0.8rem;
+}

@@ -176,3 +176,8 @@
     grid-template-columns: 1fr;
   }
 }
+
+.task-detail__people {
+  display: grid;
+  gap: 6px;
+}

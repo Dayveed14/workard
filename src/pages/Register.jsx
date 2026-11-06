@@ -130,7 +130,7 @@ export default function Register() {
 
         {billing.enabled && (
         <fieldset className="plan-pick">
-          <legend className="field__label">Plan — {billing.trialDays} days free, then paid yearly</legend>
+          <legend className="field__label">Plan — {billing.trialDays} days free, then monthly or yearly</legend>
           {PLANS.map((p) => (
             <label key={p.id} className={`plan-pick__option ${form.plan === p.id ? 'is-on' : ''}`}>
               <input type="radio" name="plan" value={p.id} checked={form.plan === p.id} onChange={onChange} />
@@ -138,8 +138,8 @@ export default function Register() {
                 {p.name}
                 {form.plan === p.id && <Check size={14} />}
               </span>
-              <strong>{formatMoney(p.priceKobo, { decimals: false })}</strong>
-              <small>/ year</small>
+              <strong>{formatMoney(p.prices.monthly, { decimals: false })}</strong>
+              <small>/ month</small>
             </label>
           ))}
           {errors.plan && <span className="field__error">{errors.plan}</span>}

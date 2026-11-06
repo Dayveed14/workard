@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSeo } from './seo/useSeo.js';
 import ProtectedRoute, { GuestRoute, RequireFeature, RequirePermission } from './components/ProtectedRoute.jsx';
@@ -34,10 +35,22 @@ import Tasks from './pages/app/tasks/Tasks.jsx';
 import TaskDetail from './pages/app/tasks/TaskDetail.jsx';
 import Reviews from './pages/app/reviews/Reviews.jsx';
 import ReviewDetail from './pages/app/reviews/ReviewDetail.jsx';
+import Announcements from './pages/app/announcements/Announcements.jsx';
+import Requests from './pages/app/requests/Requests.jsx';
+import { PrivateFeedback } from './pages/app/requests/Feedback.jsx';
+import Resources from './pages/app/resources/Resources.jsx';
+import ResourceDetail from './pages/app/resources/ResourceDetail.jsx';
+import Projects from './pages/app/projects/Projects.jsx';
+import ProjectDetail from './pages/app/projects/ProjectDetail.jsx';
+import Meetings from './pages/app/meetings/Meetings.jsx';
+import MeetingDetail from './pages/app/meetings/MeetingDetail.jsx';
 import Billing from './pages/app/billing/Billing.jsx';
 import BillingCallback from './pages/app/billing/BillingCallback.jsx';
 import Onboarding from './pages/app/onboarding/Onboarding.jsx';
 import OnboardingDetail from './pages/app/onboarding/OnboardingDetail.jsx';
+
+// The video room loads LiveKit (large) only when someone joins a meeting
+const MeetingRoom = lazy(() => import('./pages/app/meetings/MeetingRoom.jsx'));
 
 export default function App() {
   useSeo();
@@ -59,6 +72,14 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/announcements" element={<Announcements />} />
+          <Route path="/meetings" element={<Meetings />} />
+          <Route path="/meetings/:id" element={<MeetingDetail />} />
+          <Route path="/meetings/:id/room" element={<Suspense fallback={<div className="page-loader"><span className="page-loader__spinner" /></div>}><MeetingRoom /></Suspense>} />
+          <Route path="/requests" element={<Requests />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/resources/:id" element={<ResourceDetail />} />
+          <Route path="/feedback/:token" element={<PrivateFeedback />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/leave" element={<Leave />} />
           <Route
@@ -99,6 +120,8 @@ export default function App() {
           {/* Phase 3B — everyone has their own tasks & reviews; access is checked by the API */}
           <Route path="/tasks" element={<RequireFeature feature="tasks"><Tasks /></RequireFeature>} />
           <Route path="/tasks/:id" element={<RequireFeature feature="tasks"><TaskDetail /></RequireFeature>} />
+          <Route path="/projects" element={<RequireFeature feature="tasks"><Projects /></RequireFeature>} />
+          <Route path="/projects/:id" element={<RequireFeature feature="tasks"><ProjectDetail /></RequireFeature>} />
           <Route path="/reviews" element={<RequireFeature feature="reviews"><Reviews /></RequireFeature>} />
           <Route path="/reviews/:id" element={<RequireFeature feature="reviews"><ReviewDetail /></RequireFeature>} />
 

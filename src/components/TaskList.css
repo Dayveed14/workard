@@ -136,3 +136,10 @@
     white-space: normal;
   }
 }
+
+.task-list__project {
+  padding: 1px 8px;
+  border-left: 3px solid var(--project, var(--blue));
+  border-radius: 4px;
+  background: var(--surface);
+}

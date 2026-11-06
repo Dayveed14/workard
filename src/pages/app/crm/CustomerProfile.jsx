@@ -171,6 +171,29 @@ function CustomerPayments({ customerId }) {
   );
 }
 
+// Change the stage in one click (whoever assigned the customer is told)
+function StageSelect({ customer, onChanged }) {
+  const toast = useToast();
+  const [busy, setBusy] = useState(false);
+  const change = async (e) => {
+    const stage = e.target.value;
+    setBusy(true);
+    try {
+      onChanged(await api(`/api/customers/${customer.id}`, { method: 'PATCH', body: { stage } }));
+      toast.success(`Moved to ${CUSTOMER_STAGES[stage]}`);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <select className={`cprofile__stage cprofile__stage--${customer.stage}`} value={customer.stage} onChange={change} disabled={busy} aria-label="Stage">
+      {Object.entries(CUSTOMER_STAGES).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+    </select>
+  );
+}
+
 // "Lead 3 Nov → Prospect 10 Nov → Customer 21 Nov"
 function StageJourney({ customerId, stage }) {
   // The stage is in the URL so the history reloads after an edit changes it
@@ -209,7 +232,7 @@ function CustomerTasks({ customerId }) {
 export default function CustomerProfile() {
   const { id } = useParams();
   const { can } = useAuth();
-  const { data: c, loading, error, reload } = useApi(`/api/customers/${id}`);
+  const { data: c, setData, loading, error, reload } = useApi(`/api/customers/${id}`);
   const [tab, setTab] = useState('activity');
   const [editing, setEditing] = useState(false);
 
@@ -229,7 +252,7 @@ export default function CustomerProfile() {
         <div className="cprofile__who">
           <div className="cprofile__title">
             <h1>{c.name}</h1>
-            <Badge status={c.stage} />
+            {can('customers.manage') ? <StageSelect customer={c} onChanged={setData} /> : <Badge status={c.stage} />}
           </div>
           <ul className="cprofile__contact">
             {c.contact_person && <li><User size={15} /> {c.contact_person}</li>}
@@ -239,6 +262,9 @@ export default function CustomerProfile() {
           </ul>
           <p className="muted cprofile__owner">
             Handled by <strong>{c.assigned_name || 'no one yet'}</strong>
+            {c.assigned_by_name && c.assigned_by_name !== c.assigned_name && (
+              <> · assigned by <strong>{c.assigned_by_name}</strong>{c.assigned_at && ` on ${formatDate(c.assigned_at)}`}</>
+            )}
             {c.source && ` · Source: ${c.source}`}
           </p>
           <StageJourney customerId={c.id} stage={c.stage} />

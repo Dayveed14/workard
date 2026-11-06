@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AlertCircle, Plus, X } from 'lucide-react';
 import Modal from './Modal.jsx';
 import Field from './Field.jsx';
+import PeoplePicker from './PeoplePicker.jsx';
 import { api } from '../api/client.js';
 import { useApi } from '../hooks/useApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -10,11 +11,16 @@ import { TASK_PRIORITIES, todayString } from '../utils/format.js';
 import './TaskModal.css';
 
 // Create a task (task = null) or edit one. `customerId` links a new task to a customer.
-export default function TaskModal({ task, customerId, defaultAssigneeId, onClose, onSaved }) {
+export default function TaskModal({ task, customerId, projectId, defaultAssigneeId, onClose, onSaved }) {
   const toast = useToast();
   const { employee } = useAuth();
   const { data: people } = useApi('/api/tasks/assignees');
+  const { data: projects } = useApi('/api/projects?status=active');
   const isEdit = Boolean(task);
+  // Everyone on the task — the first is the lead
+  const [assigneeIds, setAssigneeIds] = useState(
+    task?.assignees?.length ? task.assignees.map((a) => a.id) : [defaultAssigneeId || employee?.id].filter(Boolean)
+  );
 
   const [form, setForm] = useState({
     title: task?.title || '',
@@ -22,6 +28,7 @@ export default function TaskModal({ task, customerId, defaultAssigneeId, onClose
     assignedEmployeeId: task?.assigned_employee_id || defaultAssigneeId || employee?.id || '',
     dueDate: task?.due_date || '',
     priority: task?.priority || 'normal',
+    projectId: task ? task.project_id || '' : projectId || '',
   });
   const [checklist, setChecklist] = useState(['']);
   const [errors, setErrors] = useState({});
@@ -35,9 +42,10 @@ export default function TaskModal({ task, customerId, defaultAssigneeId, onClose
     setBusy(true);
     setError('');
     try {
+      const { assignedEmployeeId: _lead, ...fields } = form;
       const body = isEdit
-        ? form
-        : { ...form, customerId: customerId || '', checklist: checklist.map((c) => c.trim()).filter(Boolean) };
+        ? { ...fields, assigneeIds }
+        : { ...fields, assigneeIds, customerId: customerId || '', checklist: checklist.map((c) => c.trim()).filter(Boolean) };
       const saved = await api(isEdit ? `/api/tasks/${task.id}` : '/api/tasks', { method: isEdit ? 'PATCH' : 'POST', body });
       toast.success(isEdit ? 'Task updated' : 'Task created');
       onSaved(saved);
@@ -71,18 +79,20 @@ export default function TaskModal({ task, customerId, defaultAssigneeId, onClose
           <input id="title" name="title" className="field__input" value={form.title} onChange={onChange} placeholder="e.g. Send November stock count" autoFocus />
         </Field>
 
+        <Field
+          label="Who’s on it"
+          name="assignedEmployeeId"
+          error={errors.assignedEmployeeId || errors.assigneeIds}
+          hint={people && others.length === 0 ? 'No one else to choose yet' : 'Pick one or more people. The first is the lead — click a name to make them lead.'}
+        >
+          {people ? <PeoplePicker people={people} value={assigneeIds} onChange={setAssigneeIds} meId={employee?.id} /> : <div className="field__input">Loading…</div>}
+        </Field>
+
         <div className="form__row form__row--3">
-          <Field
-            label="For"
-            name="assignedEmployeeId"
-            error={errors.assignedEmployeeId}
-            hint={people && others.length === 0 ? 'No one else to choose yet' : undefined}
-          >
-            <select id="assignedEmployeeId" name="assignedEmployeeId" className="field__input" value={form.assignedEmployeeId} onChange={onChange} disabled={!people}>
-              {employee && <option value={employee.id}>Me</option>}
-              {others.map((p) => (
-                <option key={p.id} value={p.id}>{p.first_name} {p.last_name}{p.job_title ? ` — ${p.job_title}` : ''}</option>
-              ))}
+          <Field label="Project" name="projectId" error={errors.projectId} optional>
+            <select id="projectId" name="projectId" className="field__input" value={form.projectId} onChange={onChange}>
+              <option value="">No project</option>
+              {(projects || []).map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
           </Field>
           <Field label="Due" name="dueDate" error={errors.dueDate} optional>

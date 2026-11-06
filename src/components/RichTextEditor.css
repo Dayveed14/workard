@@ -1,0 +1,88 @@
+.rte {
+  border: 1px solid var(--gray);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.rte:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.rte__toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 6px;
+  border-bottom: 1px solid var(--gray);
+  border-radius: 10px 10px 0 0;
+  background: var(--surface);
+}
+
+.rte__toolbar button {
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.rte__toolbar button:hover {
+  background: #fff;
+}
+
+.rte__plain {
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.rte__area {
+  min-height: 360px;
+  padding: 18px 22px;
+  outline: none;
+}
+
+.rte__area:empty::before {
+  content: attr(data-placeholder);
+  color: #94a3b8;
+}
+
+/* Shared look for documents (editor and reading view) */
+.doc-body {
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.doc-body h2 {
+  margin: 1.2em 0 0.4em;
+  font-size: 1.3rem;
+}
+
+.doc-body h3 {
+  margin: 1em 0 0.3em;
+  font-size: 1.08rem;
+}
+
+.doc-body p {
+  margin: 0 0 0.8em;
+}
+
+.doc-body blockquote {
+  margin: 0 0 0.8em;
+  padding: 6px 14px;
+  border-left: 3px solid var(--blue);
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.doc-body a {
+  color: var(--blue);
+}
