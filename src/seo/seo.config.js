@@ -51,6 +51,8 @@ const APP_TITLES = {
   '/projects': 'Projects',
   '/resources': 'Resources',
   '/requests': 'Requests',
+  '/announcements': 'Announcements',
+  '/performance': 'Performance',
 };
 
 export const notFound = {
