@@ -299,3 +299,22 @@
   color: #b45309;
   text-decoration: underline;
 }
+
+/* A Workard support visit (read-only, the owner allowed it) */
+.app__support {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.9rem;
+}
+
+.app__support span {
+  flex: 1;
+  min-width: 200px;
+}

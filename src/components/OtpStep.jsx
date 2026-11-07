@@ -6,7 +6,7 @@ import './OtpStep.css';
 // The "enter the 6-digit code we emailed you" step.
 // Used for sign up, log in and password reset.
 //   onSubmit(code) → do the verification (throw an error to show it)
-export default function OtpStep({ challenge, onSubmit, onBack, submitLabel = 'Verify', children }) {
+export default function OtpStep({ challenge, onSubmit, onBack, submitLabel = 'Verify', resendPath = '/api/auth/resend-otp', children }) {
   const [digits, setDigits] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -64,7 +64,7 @@ export default function OtpStep({ challenge, onSubmit, onBack, submitLabel = 'Ve
   const resend = async () => {
     setError('');
     try {
-      await api('/api/auth/resend-otp', { method: 'POST', body: { challengeToken: challenge.challengeToken } });
+      await api(resendPath, { method: 'POST', body: { challengeToken: challenge.challengeToken } });
       setCooldown(60);
     } catch (err) {
       setError(err.message);

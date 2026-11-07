@@ -13,6 +13,8 @@ import PayrollSettings from './PayrollSettings.jsx';
 import ReviewSettings from './ReviewSettings.jsx';
 import ActivityLog from './ActivityLog.jsx';
 import BrandingSettings from './BrandingSettings.jsx';
+import SupportAccessSettings from './SupportAccessSettings.jsx';
+import LoanSettings from './LoanSettings.jsx';
 import './Settings.css';
 
 // Each tab only shows if the user has the permission for it
@@ -25,15 +27,17 @@ const TABS = [
   { id: 'finance', label: 'Invoicing & finance', permission: 'finance.manage', feature: 'invoices', Component: FinanceSettings },
   { id: 'invoice-look', label: 'Invoice look', permission: 'finance.manage', feature: 'invoices', Component: BrandingSettings },
   { id: 'payroll', label: 'Payroll', permission: ['payroll.manage', 'payroll.approve'], feature: 'payroll', Component: PayrollSettings },
+  { id: 'loans', label: 'Loans & advances', permission: ['payroll.manage', 'payroll.approve'], feature: 'payroll', Component: LoanSettings },
   { id: 'reviews', label: 'Reviews', permission: 'reviews.setup', feature: 'reviews', Component: ReviewSettings },
   { id: 'roles', label: 'Roles & permissions', permission: 'roles.manage', Component: RolesSettings },
   { id: 'activity', label: 'Activity log', permission: 'audit.view', Component: ActivityLog },
+  { id: 'support', label: 'Workard support', ownerOnly: true, Component: SupportAccessSettings },
 ];
 
 export default function Settings() {
-  const { can, canAny, subscription } = useAuth();
+  const { can, canAny, subscription, role } = useAuth();
   const [params, setParams] = useSearchParams();
-  const tabs = TABS.filter((t) => (Array.isArray(t.permission) ? canAny(...t.permission) : can(t.permission)))
+  const tabs = TABS.filter((t) => (t.ownerOnly ? role?.isOwner : Array.isArray(t.permission) ? canAny(...t.permission) : can(t.permission)))
     .filter((t) => !t.feature || subscription?.features.includes(t.feature)); // only what the plan includes
   const active = tabs.find((t) => t.id === params.get('tab')) || tabs[0];
 

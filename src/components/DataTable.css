@@ -1,0 +1,108 @@
+.dt-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 240px;
+  max-width: 360px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--gray);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--muted);
+}
+
+.dt-search:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.dt-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  color: var(--text);
+}
+
+.dt-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.dt-search button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.dt-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dt-sort svg {
+  opacity: 0.45;
+}
+
+.dt-sort:hover,
+.dt-sort.is-active {
+  color: var(--text);
+}
+
+.dt-sort.is-active svg {
+  opacity: 1;
+  color: var(--blue);
+}
+
+.dt-pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--gray);
+  font-size: 0.88rem;
+}
+
+.dt-pager__buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dt-none {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.dt-staff-id {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  vertical-align: 1px;
+}

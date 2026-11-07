@@ -284,3 +284,68 @@
   margin: -6px 0 0;
   font-size: 0.82rem;
 }
+
+/* Workard support access */
+.support-access h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.support-access > p {
+  max-width: 720px;
+  margin-bottom: 16px;
+}
+
+.support-access__open {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--green-50);
+  color: #047857;
+}
+
+.support-access__open > div {
+  flex: 1;
+  min-width: 200px;
+}
+
+.support-access__form {
+  max-width: 720px;
+}
+
+.support-access__visits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.support-access__visits li {
+  padding: 10px 20px;
+  border-top: 1px solid var(--gray);
+  font-size: 0.9rem;
+}
+
+.support-access-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Loans & advances */
+.loan-example {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--blue-50);
+  color: #1e3a8a;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.loan-note {
+  font-size: 0.85rem;
+}

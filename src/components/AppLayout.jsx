@@ -28,6 +28,7 @@ import {
   Wallet,
   X,
   Contact,
+  Eye,
 } from 'lucide-react';
 import Logo from './Logo.jsx';
 import NotificationBell from './NotificationBell.jsx';
@@ -70,7 +71,7 @@ const SOON = [
 ];
 
 export default function AppLayout() {
-  const { user, organization, organizations, employee, role, canAny, logout, switchOrganization, subscription } = useAuth();
+  const { user, organization, organizations, employee, role, canAny, logout, switchOrganization, subscription, support } = useAuth();
   const has = (feature) => !feature || subscription?.features.includes(feature);
   const locked = subscription && !subscription.usable; // unpaid / expired: only billing works
   // Owners see a reminder in the last 30 days of the year (and during the grace days)
@@ -90,6 +91,13 @@ export default function AppLayout() {
     document.addEventListener('mousedown', close);
     return () => document.removeEventListener('mousedown', close);
   }, []);
+
+  // A Workard support visit ends by going back to the admin area
+  const endSupport = async () => {
+    const orgId = organization?.id;
+    await logout();
+    window.location.assign(`/admin/companies/${orgId}`);
+  };
 
   const onLogout = async () => {
     await logout();
@@ -112,7 +120,7 @@ export default function AppLayout() {
     <div className={`app ${menuOpen ? 'app--menu-open' : ''}`}>
       <aside className="sidebar" aria-label="Main navigation">
         <div className="sidebar__brand">
-          <Link to="/">
+          <Link to="/dashboard">
             <Logo variant="light" size={26} />
           </Link>
           <button type="button" className="sidebar__close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
@@ -207,6 +215,16 @@ export default function AppLayout() {
         </header>
 
         <main className="app__content">
+          {support && (
+            <div className="app__support" role="status">
+              <Eye size={16} />
+              <span>
+                You’re viewing <strong>{organization?.name}</strong> as Workard support — <strong>read-only</strong>, until{' '}
+                {new Date(String(support.expiresAt).replace(' ', 'T')).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}.
+              </span>
+              <button type="button" className="btn btn--sm btn--outline" onClick={endSupport}>Exit</button>
+            </div>
+          )}
           {role?.isOwner && subscription?.status === 'trial' && location.pathname !== '/billing' && (
             <div className="app__renew">
               {subscription.daysLeft + 1} day{subscription.daysLeft === 0 ? '' : 's'} left of your free {subscription.planName} trial.{' '}

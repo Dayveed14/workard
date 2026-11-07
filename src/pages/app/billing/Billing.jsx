@@ -8,6 +8,7 @@ import { useApi } from '../../../hooks/useApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { useToast } from '../../../context/ToastContext.jsx';
 import { PLANS, perMonthKobo } from '../../../config/plans.js';
+import { yearlySaving } from '../../../hooks/usePlans.js';
 import { formatDate, formatDateTime, formatMoney } from '../../../utils/format.js';
 import './Billing.css';
 
@@ -186,7 +187,7 @@ export default function Billing() {
       {!sub.isLegacy && !isFree && (
         <>
           <div className="billing__toggle">
-            <IntervalToggle value={interval} onChange={setInterval} />
+            <IntervalToggle value={interval} onChange={setInterval} saving={yearlySaving(plans)} />
           </div>
           <div className="billing__plans">
             {plans.map((p) => {
@@ -203,7 +204,7 @@ export default function Billing() {
                   {!isCurrent && info.featured && <span className="billing__tag billing__tag--blue">Most popular</span>}
                   <h3>{p.name}</h3>
                   <p className="billing__price">
-                    {naira(perMonthKobo(info, interval))} <small>/ month</small>
+                    {naira(perMonthKobo(p, interval))} <small>/ month</small>
                   </p>
                   <p className="muted billing__billed">
                     {interval === 'yearly' ? `${naira(p.prices.yearly)} billed once a year` : 'billed monthly'}

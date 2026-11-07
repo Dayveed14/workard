@@ -1,0 +1,25 @@
+.slips__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.slips__years {
+  flex-wrap: wrap;
+}
+
+.slips__totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.slips__totals strong {
+  color: var(--text);
+}

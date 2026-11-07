@@ -22,7 +22,7 @@ function AskModal({ type, limits, onDone, onClose }) {
   const [busy, setBusy] = useState(false);
   const max = limits[type].maxKobo;
   const kobo = Math.round(Number(amount || 0) * 100);
-  const plan = previewPlan(type, kobo);
+  const plan = previewPlan(limits[type], kobo);
 
   const submit = async () => {
     setBusy(true);
@@ -51,8 +51,8 @@ function AskModal({ type, limits, onDone, onClose }) {
     >
       <p className="muted req__intro">
         {type === 'loan'
-          ? `Up to ${naira(max)} (a year’s basic pay, less any open loans). Repaid over ${plan.months} months from your salary, with ${plan.ratePct}% flat interest.`
-          : `Up to ${naira(max)} (one month’s basic pay). Taken back in full from your next salary — no interest.`}
+          ? `Up to ${naira(max)} (${limits.loan.maxPercent}% of a year’s basic pay${limits.loan.ceilingKobo ? `, at most ${naira(limits.loan.ceilingKobo)}` : ''}, less any open loans). Repaid over ${plan.months} month${plan.months === 1 ? '' : 's'} from your salary${plan.ratePct ? `, with ${plan.ratePct}% flat interest` : ', no interest'}.`
+          : `Up to ${naira(max)} (${limits.advance.maxPercent}% of a month’s basic pay). ${plan.months === 1 ? 'Taken back in full from your next salary' : `Taken back over your next ${plan.months} salaries`}${plan.ratePct ? `, with ${plan.ratePct}% interest` : ' — no interest'}.`}
       </p>
       <Field label="Amount (₦)" name="amount" error={errors.amount}>
         <input id="amount" type="number" min="1" step="1" inputMode="numeric" className="field__input" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={type === 'loan' ? 'e.g. 500000' : 'e.g. 100000'} autoFocus />
@@ -126,18 +126,28 @@ export function MyMoneyRequests() {
   return (
     <>
       <div className="req-ask">
-        <button type="button" className="card req-ask__card" disabled={noSalary || limits.advance.open} onClick={() => setAsking('advance')}>
+        <button type="button" className="card req-ask__card" disabled={noSalary || !limits.advance.enabled || limits.advance.open} onClick={() => setAsking('advance')}>
           <span className="req-ask__icon"><Banknote size={22} /></span>
           <span>
             <strong>Salary advance</strong>
-            <small>{limits.advance.open ? 'You already have one open' : `Up to ${naira(limits.advance.maxKobo)} · back from your next salary`}</small>
+            <small>
+              {!limits.advance.enabled
+                ? 'Not offered by your company'
+                : limits.advance.open
+                  ? 'You already have one open'
+                  : `Up to ${naira(limits.advance.maxKobo)} · ${limits.advance.months === 1 ? 'back from your next salary' : `back over ${limits.advance.months} salaries`}`}
+            </small>
           </span>
         </button>
-        <button type="button" className="card req-ask__card" disabled={noSalary || !limits.loan.maxKobo} onClick={() => setAsking('loan')}>
+        <button type="button" className="card req-ask__card" disabled={noSalary || !limits.loan.enabled || !limits.loan.maxKobo} onClick={() => setAsking('loan')}>
           <span className="req-ask__icon req-ask__icon--loan"><PiggyBank size={22} /></span>
           <span>
             <strong>Staff loan</strong>
-            <small>Up to {naira(limits.loan.maxKobo)} · {limits.loan.months} months · {limits.loan.interestRateBp / 100}% flat</small>
+            <small>
+              {limits.loan.enabled
+                ? `Up to ${naira(limits.loan.maxKobo)} · ${limits.loan.months} month${limits.loan.months === 1 ? '' : 's'} · ${limits.loan.interestRateBp / 100}% flat`
+                : 'Not offered by your company'}
+            </small>
           </span>
         </button>
       </div>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getSeo } from './seo.config.js';
 
@@ -26,6 +26,13 @@ const meta = (key, keyAttr, value) =>
 // Keeps <title>, description, canonical and Open Graph tags in sync on client-side navigation
 export function useSeo() {
   const { pathname } = useLocation();
+  // A page with its own tags (a blog post) tells us when they're ready
+  const [version, setVersion] = useState(0);
+  useEffect(() => {
+    const bump = () => setVersion((v) => v + 1);
+    window.addEventListener('workard:seo', bump);
+    return () => window.removeEventListener('workard:seo', bump);
+  }, []);
 
   useEffect(() => {
     const s = getSeo(pathname);
@@ -35,6 +42,8 @@ export function useSeo() {
     meta('og:title', 'property', s.title);
     meta('og:description', 'property', s.description);
     meta('og:url', 'property', s.canonical);
+    meta('og:image', 'property', s.image);
+    meta('og:type', 'property', s.type || 'website');
     meta('twitter:title', 'name', s.title);
     meta('twitter:description', 'name', s.description);
     upsert(
@@ -47,5 +56,5 @@ export function useSeo() {
       'href',
       s.canonical
     );
-  }, [pathname]);
+  }, [pathname, version]);
 }

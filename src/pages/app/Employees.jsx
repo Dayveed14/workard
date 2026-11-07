@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus, Search, Users } from 'lucide-react';
 import PageHeader from '../../components/PageHeader.jsx';
 import Avatar from '../../components/Avatar.jsx';
@@ -13,8 +13,27 @@ import { fullName } from '../../utils/format.js';
 export default function Employees() {
   const { can } = useAuth();
   const navigate = useNavigate();
-  const [filters, setFilters] = useState({ search: '', branchId: '', departmentId: '', status: 'active', page: 1 });
-  const [searchText, setSearchText] = useState('');
+  const location = useLocation();
+  // Search, filters and page live in the address (?search=ada&page=2), so the
+  // "← Employees" link on a profile brings you back to exactly this list
+  const [params, setParams] = useSearchParams();
+  const filters = {
+    search: params.get('search') || '',
+    branchId: params.get('branchId') || '',
+    departmentId: params.get('departmentId') || '',
+    status: params.has('status') ? params.get('status') : 'active',
+    page: Number(params.get('page')) || 1,
+  };
+  const setFilters = (update) => {
+    const next = typeof update === 'function' ? update(filters) : update;
+    const clean = {};
+    for (const [k, v] of Object.entries(next)) {
+      if (k === 'status' ? v !== 'active' : k === 'page' ? v > 1 : v) clean[k] = String(v);
+    }
+    setParams(clean, { replace: true });
+  };
+  const [searchText, setSearchText] = useState(filters.search);
+  const open = (id) => navigate(`/employees/${id}`, { state: { from: `${location.pathname}${location.search}`, label: 'Employees' } });
 
   const { data, loading, error } = useApi(`/api/employees${toQuery(filters)}`);
   const { data: structure } = useApi('/api/organization/structure');
@@ -80,6 +99,7 @@ export default function Employees() {
                 <thead>
                   <tr>
                     <th>Name</th>
+                    <th>Staff ID</th>
                     <th>Department</th>
                     <th>Branch</th>
                     <th>Access</th>
@@ -88,7 +108,7 @@ export default function Employees() {
                 </thead>
                 <tbody>
                   {data.employees.map((e) => (
-                    <tr key={e.id} onClick={() => navigate(`/employees/${e.id}`)}>
+                    <tr key={e.id} onClick={() => open(e.id)}>
                       <td>
                         <div className="person">
                           <Avatar name={fullName(e)} src={e.photo_url} />
@@ -98,6 +118,7 @@ export default function Employees() {
                           </span>
                         </div>
                       </td>
+                      <td>{e.staff_id || <span className="muted">—</span>}</td>
                       <td>{e.department_name || <span className="muted">—</span>}</td>
                       <td>{e.branch_name || <span className="muted">—</span>}</td>
                       <td>

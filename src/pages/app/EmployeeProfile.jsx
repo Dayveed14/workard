@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { UserPlus, Camera, Download, FileText, KeyRound, Mail, Pencil, Trash2, Upload, UserMinus } from 'lucide-react';
+import BackLink from '../../components/BackLink.jsx';
 import Avatar from '../../components/Avatar.jsx';
 import Badge from '../../components/Badge.jsx';
 import Tabs from '../../components/Tabs.jsx';
@@ -305,6 +306,7 @@ export default function EmployeeProfile() {
 
   return (
     <>
+      <BackLink fallback="/employees" label="Employees" />
       <section className="profile__header card">
         <div className="profile__photo">
           <Avatar name={fullName(e)} src={e.photo_url} size={84} />

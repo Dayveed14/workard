@@ -51,7 +51,7 @@ export default function Register() {
     if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) next.email = 'Enter a valid email address';
     if (form.phone && !/^\+?[0-9\s-]{7,20}$/.test(form.phone.trim())) next.phone = 'Enter a valid phone number';
     if (!passwordIsValid(form.password)) next.password = 'Password does not meet the requirements';
-    if (!agree) next.agree = 'Please accept the terms to continue';
+    if (!agree) next.agree = 'Please accept the Privacy Policy to continue';
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -112,7 +112,7 @@ export default function Register() {
       title="Create your account"
       subtitle={
         billing.enabled
-          ? `Try any plan free for ${billing.trialDays} days — no card needed. Pay yearly when you’re ready.`
+          ? `Try any plan free for ${billing.trialDays} days — no card needed. Pay monthly or yearly when you’re ready.`
           : 'Set up your organisation in a minute. Workard is free during early access.'
       }
       footer={
@@ -201,8 +201,7 @@ export default function Register() {
               }}
             />
             <span>
-              I agree to Workard’s <a href="/legal/terms">Terms of Service</a> and{' '}
-              <a href="/legal/privacy">Privacy Policy</a>.
+              I agree to Workard’s <a href="/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>.
             </span>
           </label>
         </Field>

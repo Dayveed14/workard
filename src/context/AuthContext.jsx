@@ -7,7 +7,8 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
-  const [status, setStatus] = useState('loading'); // loading | authenticated | guest
+  const [status, setStatus] = useState('loading'); // loading | authenticated | guest | suspended
+  const [suspendedMessage, setSuspendedMessage] = useState('');
 
   const signIn = useCallback((s) => {
     setSession(s);
@@ -19,9 +20,16 @@ export function AuthProvider({ children }) {
     let active = true;
     api('/api/auth/me')
       .then((s) => active && signIn(s))
-      .catch(() => active && setStatus('guest'));
+      .catch((err) => active && setStatus(err.status === 423 ? 'suspended' : 'guest'));
+    // Any request can find out the company has been suspended by Workard
+    const onSuspended = (e) => {
+      setSuspendedMessage(e.detail || '');
+      setStatus('suspended');
+    };
+    window.addEventListener('workard:suspended', onSuspended);
     return () => {
       active = false;
+      window.removeEventListener('workard:suspended', onSuspended);
     };
   }, [signIn]);
 
@@ -30,7 +38,10 @@ export function AuthProvider({ children }) {
     return {
       ...session,
       status,
+      suspendedMessage,
       isAuthenticated: status === 'authenticated',
+      // A Workard support visit (read-only) — see AppLayout's banner
+      isSupportVisit: Boolean(session?.support),
 
       // can('employees.view') → scope string ("team", "all"...) or undefined
       can: (key) => permissions[key],

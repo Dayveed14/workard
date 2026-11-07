@@ -22,7 +22,10 @@ import {
   ListChecks,
 } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
-import { PLANS, perMonthKobo } from '../config/plans.js';
+import { perMonthKobo } from '../config/plans.js';
+import { usePlans, yearlySaving } from '../hooks/usePlans.js';
+import LatestPosts from '../components/LatestPosts.jsx';
+import DemoForm from '../components/DemoForm.jsx';
 import IntervalToggle from '../components/IntervalToggle.jsx';
 import { formatMoney } from '../utils/format.js';
 import Footer from '../components/Footer.jsx';
@@ -107,9 +110,9 @@ const insights = [
   { tone: 'info', icon: UserCheck, text: '42 of 48 employees are at work right now.', action: 'Register' },
 ];
 
-// Pricing comes from the same list the sign-up page uses (src/config/plans.js)
-const plansFor = (interval) =>
-  PLANS.map((p) => ({
+// Plans and wording from src/config/plans.js; prices are today's (the super admin can change them)
+const plansFor = (plans, interval) =>
+  plans.map((p) => ({
     ...p,
     price: formatMoney(perMonthKobo(p, interval), { decimals: false }),
     period: interval === 'yearly' ? `per month · ${formatMoney(p.prices.yearly, { decimals: false })} billed yearly` : 'per month',
@@ -190,6 +193,7 @@ function DashboardPreview() {
 
 export default function Home() {
   const [interval, setInterval] = useState('monthly');
+  const { plans } = usePlans();
   return (
     <>
       <Navbar />
@@ -352,10 +356,10 @@ export default function Home() {
               <p className="eyebrow">Pricing</p>
               <h2>Pay monthly. Grow into it.</h2>
               <p>Simple plans for businesses of every size — or pay yearly and save.</p>
-              <IntervalToggle value={interval} onChange={setInterval} />
+              <IntervalToggle value={interval} onChange={setInterval} saving={yearlySaving(plans)} />
             </div>
             <div className="plans">
-              {plansFor(interval).map((p) => (
+              {plansFor(plans, interval).map((p) => (
                 <article key={p.name} className={`plan ${p.featured ? 'plan--featured' : ''}`}>
                   {p.featured && <span className="plan__badge">Most popular</span>}
                   <h3>{p.name}</h3>
@@ -375,6 +379,25 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* DEMO */}
+        <section id="demo" className="section">
+          <div className="container demo">
+            <div className="demo__text">
+              <p className="eyebrow">See it first</p>
+              <h2>Book a free demo</h2>
+              <p>We’ll walk you through Workard with your own setup in mind — branches, payroll, clock-in rules — and answer every question. It takes about 30 minutes.</p>
+              <ul className="check-list">
+                <li><CheckCircle2 size={18} /> A real person, not a sales script</li>
+                <li><CheckCircle2 size={18} /> We reply within one working day</li>
+              </ul>
+            </div>
+            <DemoForm />
+          </div>
+        </section>
+
+        {/* BLOG */}
+        <LatestPosts />
 
         {/* FAQ */}
         <section id="faq" className="section section--tinted">

@@ -107,7 +107,7 @@ export default function Meetings() {
                         <strong>{m.title}</strong>
                         <small className="muted">
                           {m.audienceName || 'Invited people'} · {m.durationMinutes} min
-                          {m.isStandup ? ' · stand-up' : m.repeat !== 'none' ? ' · repeats' : ''}
+                          {m.isStandup ? ' · stand-up' : ''}{m.repeat !== 'none' ? ` · ${m.repeatText.toLowerCase()}` : ''}
                         </small>
                       </span>
                     </Link>

@@ -1,5 +1,5 @@
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
-import { Lock, Sparkles } from 'lucide-react';
+import { Lock, ShieldAlert, Sparkles } from 'lucide-react';
 import { FEATURE_NAMES, FEATURE_PLAN, planById } from '../config/plans.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import EmptyState from './EmptyState.jsx';
@@ -14,10 +14,27 @@ function Loader() {
 }
 
 // Logged-in users only. While the plan is unpaid or expired, only the billing pages open.
+// The company was suspended by Workard: nothing works, say why and how to sort it out
+function Suspended() {
+  const { suspendedMessage, logout } = useAuth();
+  return (
+    <div className="suspended">
+      <div className="card suspended__card">
+        <ShieldAlert size={36} />
+        <h1>This account is suspended</h1>
+        <p>{suspendedMessage || 'Workard has suspended this company’s account.'}</p>
+        <p className="muted">Your data is kept safe. Write to <a href="mailto:hello@workard.com">hello@workard.com</a> and we’ll help.</p>
+        <button type="button" className="btn btn--outline" onClick={() => logout().then(() => window.location.assign('/login'))}>Log out</button>
+      </div>
+    </div>
+  );
+}
+
 export default function ProtectedRoute() {
   const { status, subscription } = useAuth();
   const location = useLocation();
   if (status === 'loading') return <Loader />;
+  if (status === 'suspended') return <Suspended />;
   if (status === 'guest') return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   if (subscription && !subscription.usable && !location.pathname.startsWith('/billing')) {
     return <Navigate to="/billing" replace />;

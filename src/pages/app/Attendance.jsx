@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, Check, Flag, Hourglass, MapPin, ShieldCheck, Wifi, X } from 'lucide-react';
 import PageHeader from '../../components/PageHeader.jsx';
@@ -11,6 +11,7 @@ import EmptyState from '../../components/EmptyState.jsx';
 import ReviewModal from '../../components/ReviewModal.jsx';
 import AdherenceDonut, { ATTENDANCE_PARTS, AdherenceTrend } from '../../components/AdherenceDonut.jsx';
 import { AdherenceBar, AdherenceRing } from '../../components/AdherenceBar.jsx';
+import { Pager, SearchBox, SortTh, useTable } from '../../components/DataTable.jsx';
 import { api } from '../../api/client.js';
 import { useApi } from '../../hooks/useApi.js';
 import { useAuth } from '../../context/AuthContext.jsx';
@@ -20,10 +21,35 @@ import './Attendance.css';
 
 // Monthly adherence for everyone the viewer can see — worst first, so the people
 // who need a conversation are at the top. Bars compare people; the donut sums up the team.
+const MONTHLY_SORTS = {
+  worst: { label: 'On time % — lowest first', key: 'pct', dir: 'asc' },
+  best: { label: 'On time % — highest first', key: 'pct', dir: 'desc' },
+  absent: { label: 'Most absent', key: 'absent', dir: 'desc' },
+  late: { label: 'Most late', key: 'late', dir: 'desc' },
+  name: { label: 'Name A–Z', key: 'name', dir: 'asc' },
+  staffId: { label: 'Staff ID', key: 'staffId', dir: 'asc' },
+};
+
 function Monthly() {
   const navigate = useNavigate();
   const [month, setMonth] = useState(todayString().slice(0, 7));
+  const [order, setOrder] = useState('worst');
   const { data, loading } = useApi(`/api/attendance/monthly?month=${month}`);
+  const table = useTable(data?.people, {
+    search: (p) => [p.firstName, p.lastName, p.staffId, p.jobTitle, p.departmentName],
+    sorts: {
+      pct: (p) => p.adherence,
+      absent: (p) => p.absent,
+      late: (p) => p.late,
+      name: (p) => `${p.firstName} ${p.lastName}`,
+      staffId: (p) => p.staffId,
+    },
+    defaultSort: { key: 'pct', dir: 'asc' },
+  });
+  const changeOrder = (id) => {
+    setOrder(id);
+    table.setSort({ key: MONTHLY_SORTS[id].key, dir: MONTHLY_SORTS[id].dir });
+  };
 
   return (
     <>
@@ -42,19 +68,27 @@ function Monthly() {
               <EmptyState icon={BarChart3} title="No one to show" />
             ) : (
               <>
+                <div className="att-month__controls">
+                  <SearchBox table={table} placeholder="Search name or staff ID" />
+                  <label className="att-month__order">
+                    <span className="muted">Sort</span>
+                    <select className="field__input" value={order} onChange={(e) => changeOrder(e.target.value)}>
+                      {Object.entries(MONTHLY_SORTS).map(([id, o]) => <option key={id} value={id}>{o.label}</option>)}
+                    </select>
+                  </label>
+                </div>
                 <div className="att-month__legend" aria-hidden="true">
                   {ATTENDANCE_PARTS.map((p) => (
                     <span key={p.key}><i style={{ background: p.color }} /> {p.label}</span>
                   ))}
-                  <span className="att-month__legend-note">Sorted by on-time %, lowest first</span>
                 </div>
                 <ul className="att-month">
-                  {data.people.map((p) => (
+                  {table.rows.map((p) => (
                     <li key={p.employeeId} onClick={() => navigate(`/employees/${p.employeeId}?tab=attendance`)}>
                       <div className="person att-month__person">
                         <Avatar name={`${p.firstName} ${p.lastName}`} src={p.photoUrl} size={36} />
                         <span>
-                          <strong>{p.firstName} {p.lastName}</strong>
+                          <strong>{p.firstName} {p.lastName}{p.staffId && <span className="dt-staff-id">{p.staffId}</span>}</strong>
                           <span>{[p.jobTitle, p.departmentName].filter(Boolean).join(' · ') || '—'}</span>
                         </span>
                       </div>
@@ -75,6 +109,7 @@ function Monthly() {
                     </li>
                   ))}
                 </ul>
+                <Pager table={table} />
               </>
             )}
           </div>
@@ -85,23 +120,56 @@ function Monthly() {
 }
 
 // Daily register for the people the viewer can see
+const STATUS_ORDER = { absent: 0, flagged: 1, late: 2, present: 3, on_leave: 4, upcoming: 5 };
+const REGISTER_FILTERS = [
+  { id: 'present', label: 'present', tone: 'green', match: (r) => ['present', 'late', 'flagged'].includes(r.status) },
+  { id: 'late', label: 'late', tone: 'amber', match: (r) => r.status === 'late' },
+  { id: 'onLeave', label: 'on leave', tone: 'blue', match: (r) => r.status === 'on_leave' },
+  { id: 'absent', label: 'absent', tone: 'red', match: (r) => r.status === 'absent' },
+  { id: 'flagged', label: 'flagged', tone: 'red', match: (r) => r.status === 'flagged' },
+];
+
 function Register() {
   const [date, setDate] = useState(todayString());
+  const [show, setShow] = useState(null); // one of REGISTER_FILTERS, or everyone
   const { data, loading, error } = useApi(`/api/attendance?date=${date}`);
+  const filter = useCallback((r) => !show || REGISTER_FILTERS.find((f) => f.id === show).match(r), [show]);
+  const table = useTable(data?.register, {
+    search: (r) => [r.first_name, r.last_name, r.staff_id, r.job_title, r.department_name],
+    sorts: {
+      name: (r) => fullName(r),
+      staffId: (r) => r.staff_id,
+      department: (r) => r.department_name,
+      in: (r) => r.clock_in_at,
+      out: (r) => r.clock_out_at,
+      status: (r) => STATUS_ORDER[r.status] ?? 9,
+    },
+    defaultSort: { key: 'name', dir: 'asc' },
+    pageSize: 50,
+    filter: show ? filter : null,
+  });
 
   return (
     <>
       <div className="att__toolbar">
         <input type="date" className="field__input" value={date} max={todayString()} onChange={(e) => setDate(e.target.value)} aria-label="Date" />
         {data && (
-          <div className="att__chips">
-            <span className="att__chip att__chip--green">{data.summary.present} present</span>
-            <span className="att__chip att__chip--amber">{data.summary.late} late</span>
-            <span className="att__chip att__chip--blue">{data.summary.onLeave} on leave</span>
-            <span className="att__chip att__chip--red">{data.summary.absent} absent</span>
-            {data.summary.flagged > 0 && <span className="att__chip att__chip--red">{data.summary.flagged} flagged</span>}
+          <div className="att__chips" role="group" aria-label="Show only">
+            {REGISTER_FILTERS.filter((f) => f.id !== 'flagged' || data.summary.flagged > 0).map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                className={`att__chip att__chip--${f.tone}${show === f.id ? ' is-on' : ''}`}
+                aria-pressed={show === f.id}
+                onClick={() => setShow(show === f.id ? null : f.id)}
+                title={show === f.id ? 'Show everyone' : `Show only ${f.label}`}
+              >
+                {data.summary[f.id]} {f.label}
+              </button>
+            ))}
           </div>
         )}
+        {data && data.register.length > 0 && <SearchBox table={table} placeholder="Search name or staff ID" />}
       </div>
 
       <div className="card">
@@ -112,10 +180,18 @@ function Register() {
           <div className="table-wrap">
             <table className="table">
               <thead>
-                <tr><th>Employee</th><th>Department</th><th>In</th><th>Out</th><th>Checks</th><th>Status</th></tr>
+                <tr>
+                  <SortTh table={table} column="name">Employee</SortTh>
+                  <SortTh table={table} column="staffId">Staff ID</SortTh>
+                  <SortTh table={table} column="department">Department</SortTh>
+                  <SortTh table={table} column="in">In</SortTh>
+                  <SortTh table={table} column="out">Out</SortTh>
+                  <th>Checks</th>
+                  <SortTh table={table} column="status">Status</SortTh>
+                </tr>
               </thead>
               <tbody>
-                {data.register.map((r) => (
+                {table.rows.map((r) => (
                   <tr key={r.employee_id}>
                     <td>
                       <Link to={`/employees/${r.employee_id}`} className="person">
@@ -126,6 +202,7 @@ function Register() {
                         </span>
                       </Link>
                     </td>
+                    <td>{r.staff_id || <span className="muted">—</span>}</td>
                     <td>{r.department_name || <span className="muted">—</span>}</td>
                     <td>{formatTime(r.clock_in_at)}</td>
                     <td>{formatTime(r.clock_out_at)}</td>
@@ -155,6 +232,7 @@ function Register() {
                 ))}
               </tbody>
             </table>
+            <Pager table={table} />
           </div>
         )}
       </div>

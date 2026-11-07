@@ -1,0 +1,67 @@
+.repeat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--gray);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.repeat-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.repeat-days button {
+  min-width: 52px;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--gray);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.repeat-days button.is-on {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+}
+
+.repeat-own {
+  margin-top: 10px;
+}
+
+.repeat-times {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+
+.repeat-times label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.repeat-note {
+  font-size: 0.85rem;
+}
+
+.repeat-preview {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.repeat-preview strong {
+  color: var(--text);
+}

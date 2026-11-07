@@ -1,0 +1,143 @@
+.blog {
+  background: #fff;
+  padding-bottom: 72px;
+}
+
+.blog__hero {
+  padding: 56px 0 36px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--gray);
+}
+
+.blog__hero h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin: 6px 0 10px;
+}
+
+.blog__hero p:last-child {
+  max-width: 640px;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.blog__body {
+  padding-top: 32px;
+}
+
+.blog__cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.blog__cats button {
+  padding: 7px 14px;
+  border: 1px solid var(--gray);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.blog__cats button.is-on {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: #fff;
+}
+
+.blog__empty {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+.blog__pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+/* one post */
+.post {
+  max-width: 760px;
+  padding-top: 36px;
+}
+
+.post__back {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 22px;
+  font-weight: 600;
+}
+
+.post > .post-card__cat {
+  display: block;
+}
+
+.post h1 {
+  margin: 8px 0 12px;
+  font-size: clamp(1.9rem, 4.5vw, 2.7rem);
+  line-height: 1.2;
+}
+
+.post__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.post__cover {
+  display: block;
+  width: 100%;
+  margin: 26px 0 8px;
+  border-radius: 16px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.post__body {
+  margin-top: 22px;
+  font-size: 1.06rem;
+  line-height: 1.8;
+  color: #1e293b;
+}
+
+.post__body a {
+  color: var(--blue);
+  text-decoration: underline;
+}
+
+.post__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 40px;
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.post__cta span {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.post__related {
+  margin-top: 64px;
+}
+
+.post__related h2 {
+  margin-bottom: 18px;
+}

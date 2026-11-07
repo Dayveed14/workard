@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Bold, Heading2, Heading3, Italic, Link2, List, ListOrdered, Quote, Underline } from 'lucide-react';
+import { Bold, Heading2, Heading3, ImagePlus, Italic, Link2, List, ListOrdered, Quote, Underline } from 'lucide-react';
 import './RichTextEditor.css';
 
 // A simple document editor: headings, bold / italic / underline, lists, quotes, links.
@@ -15,11 +15,41 @@ const TOOLS = [
   { cmd: 'formatBlock', arg: 'BLOCKQUOTE', icon: Quote, label: 'Quote' },
 ];
 
-export default function RichTextEditor({ value, onChange, placeholder = 'Start writing…' }) {
+// onImage (optional, e.g. the blog): async (file) => url — adds an "insert picture" button
+export default function RichTextEditor({ value, onChange, placeholder = 'Start writing…', onImage }) {
   const box = useRef(null);
+  const picker = useRef(null);
+  const saved = useRef(null); // where the cursor was before the file picker opened
+
+  const pickImage = () => {
+    const sel = window.getSelection();
+    saved.current = sel.rangeCount && box.current.contains(sel.anchorNode) ? sel.getRangeAt(0) : null;
+    picker.current.click();
+  };
+
+  const onFile = async (e) => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    const url = await onImage(file);
+    if (!url) return;
+    box.current.focus();
+    if (saved.current) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(saved.current);
+    }
+    run('insertImage', url);
+  };
 
   // Set the starting content once (React shouldn't re-render inside a contentEditable)
   useEffect(() => {
+    // New lines become <p> (not <div>), so paragraphs survive the server's clean-up
+    try {
+      document.execCommand('defaultParagraphSeparator', false, 'p');
+    } catch {
+      /* older browsers: the server turns <div> into <p> anyway */
+    }
     if (box.current && box.current.innerHTML !== value) box.current.innerHTML = value || '';
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -44,6 +74,12 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Start w
           </button>
         ))}
         <button type="button" title="Link" aria-label="Link" onMouseDown={(e) => { e.preventDefault(); addLink(); }}><Link2 size={16} /></button>
+        {onImage && (
+          <>
+            <button type="button" title="Picture" aria-label="Insert picture" onMouseDown={(e) => { e.preventDefault(); pickImage(); }}><ImagePlus size={16} /></button>
+            <input ref={picker} type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={onFile} />
+          </>
+        )}
         <button type="button" className="rte__plain" title="Normal text" onMouseDown={(e) => { e.preventDefault(); run('formatBlock', 'P'); }}>Normal</button>
       </div>
       <div

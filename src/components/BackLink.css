@@ -1,0 +1,18 @@
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}

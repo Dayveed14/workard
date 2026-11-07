@@ -19,6 +19,8 @@ export default function Footer() {
             <li><a href="/#how-it-works">How it works</a></li>
             <li><a href="/#pricing">Pricing</a></li>
             <li><a href="/#faq">FAQ</a></li>
+            <li><Link to="/blog">Blog</Link></li>
+            <li><a href="/#demo">Book a demo</a></li>
           </ul>
         </nav>
 
@@ -39,6 +41,7 @@ export default function Footer() {
             <li><Link to="/signup">Create account</Link></li>
             <li><Link to="/login">Log in</Link></li>
             <li><a href="mailto:hello@workard.com">hello@workard.com</a></li>
+            <li><Link to="/privacy">Privacy Policy</Link></li>
           </ul>
         </nav>
       </div>

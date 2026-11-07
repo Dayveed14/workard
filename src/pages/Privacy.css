@@ -1,0 +1,146 @@
+.legal {
+  background: #fff;
+}
+
+.legal__wrap {
+  padding-top: 48px;
+  padding-bottom: 80px;
+}
+
+.legal__head {
+  max-width: 760px;
+  margin-bottom: 36px;
+}
+
+.legal__eyebrow {
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.legal__head h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  margin-bottom: 10px;
+}
+
+.legal__dates {
+  color: var(--muted);
+}
+
+.legal__layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 760px);
+  gap: 56px;
+  align-items: start;
+}
+
+.legal__toc {
+  position: sticky;
+  top: 96px;
+  font-size: 0.88rem;
+}
+
+.legal__toc p {
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.legal__toc ol {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.legal__toc a {
+  color: var(--muted);
+}
+
+.legal__toc a:hover {
+  color: var(--blue);
+}
+
+.legal__body section {
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--gray);
+  scroll-margin-top: 90px;
+}
+
+.legal__body section:last-child {
+  border-bottom: 0;
+}
+
+.legal__body h2 {
+  margin-bottom: 14px;
+  font-size: 1.35rem;
+}
+
+.legal__body h3 {
+  margin: 22px 0 8px;
+  font-size: 1.02rem;
+}
+
+.legal__body p,
+.legal__body li {
+  line-height: 1.7;
+  color: #334155;
+}
+
+.legal__body p + p,
+.legal__body p + ul,
+.legal__body ul + p {
+  margin-top: 10px;
+}
+
+.legal__body ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 22px;
+}
+
+.legal__body a {
+  color: var(--blue);
+  word-break: break-word;
+}
+
+.legal__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.legal__facts dt {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.legal__facts dd {
+  margin: 0;
+  color: #334155;
+  line-height: 1.6;
+}
+
+@media (max-width: 860px) {
+  .legal__layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .legal__toc {
+    position: static;
+    padding: 16px 18px;
+    border-radius: 12px;
+    background: var(--surface);
+  }
+}

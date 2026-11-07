@@ -50,7 +50,8 @@ export async function api(path, { method = 'GET', body, formData, retry = true }
     throw new ApiError('Cannot reach the server. Check your connection and try again.', 0);
   }
 
-  if (res.status === 401 && retry && !NO_REFRESH.includes(path)) {
+  // (the super admin area has its own log-in — a company session can't refresh it)
+  if (res.status === 401 && retry && !NO_REFRESH.includes(path) && !path.startsWith('/api/admin')) {
     if (await refreshSession()) return api(path, { method, body, formData, retry: false });
   }
 
@@ -58,6 +59,10 @@ export async function api(path, { method = 'GET', body, formData, retry = true }
   // Plan unpaid or expired while the app is open → go to the billing page
   if (res.status === 402 && typeof window !== 'undefined' && !window.location.pathname.startsWith('/billing')) {
     window.location.assign('/billing');
+  }
+  // The company was suspended by Workard → the app shows the "suspended" screen
+  if (res.status === 423 && typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('workard:suspended', { detail: data.message }));
   }
   if (!res.ok) throw new ApiError(data.message || 'Something went wrong', res.status, data.errors, data.code);
   return data;

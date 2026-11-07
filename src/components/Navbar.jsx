@@ -6,10 +6,11 @@ import { useAuth } from '../context/AuthContext.jsx';
 import './Navbar.css';
 
 const links = [
-  { href: '#features', label: 'Features' },
-  { href: '#how-it-works', label: 'How it works' },
-  { href: '#pricing', label: 'Pricing' },
-  { href: '#faq', label: 'FAQ' },
+  { href: '/#features', label: 'Features' },
+  { href: '/#how-it-works', label: 'How it works' },
+  { href: '/#pricing', label: 'Pricing' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/#demo', label: 'Book a demo' },
 ];
 
 export default function Navbar() {

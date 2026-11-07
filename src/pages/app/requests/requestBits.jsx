@@ -13,14 +13,10 @@ export const FEEDBACK_CATEGORIES = { job: 'About my job', complaint: 'Complaint'
 export const FEEDBACK_STATUS = { received: 'Received', in_review: 'Being looked at', resolved: 'Resolved' };
 export const FEEDBACK_BADGE = { received: 'pending', in_review: 'active', resolved: 'paid' };
 
-// The same rules as the server (config/requestRules.js), to preview repayments while typing
-export const RULES = {
-  loan: { months: 12, interestRateBp: 500 },
-  advance: { months: 1, interestRateBp: 0 },
-};
-
-export function previewPlan(type, amountKobo) {
-  const r = RULES[type];
+// Preview the repayment while typing — with the company's own months and interest
+// (from /api/requests/limits; the server works it out the same way when the request is sent)
+export function previewPlan(rules, amountKobo) {
+  const r = rules;
   const total = Math.round((amountKobo * (10_000 + r.interestRateBp)) / 10_000);
   return { total, monthly: Math.ceil(total / r.months / 100) * 100, months: r.months, ratePct: r.interestRateBp / 100 };
 }

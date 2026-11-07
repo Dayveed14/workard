@@ -206,9 +206,16 @@
   font-size: 0.88rem;
 }
 
+.meet-detail__side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
 .meet-detail__body {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 300px 1fr;
   gap: 16px;
   align-items: start;
 }
@@ -317,4 +324,37 @@
     padding: 0;
     height: 6px;
   }
+}
+
+/* Coming-up dates of a repeating meeting, with "cancel this date" */
+.meet-dates {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.meet-dates li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px 12px;
+  padding: 10px 20px;
+  border-top: 1px solid var(--gray);
+  font-size: 0.92rem;
+}
+
+.meet-dates li.is-current a {
+  font-weight: 700;
+}
+
+.meet-dates li.is-skipped {
+  color: var(--muted);
+}
+
+.meet-dates__skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
 }

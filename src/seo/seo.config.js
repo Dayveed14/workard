@@ -22,6 +22,15 @@ export const pages = {
     description:
       'Choose a Starter, Business or Enterprise plan and set up your organisation on Workard: employees, verified clock-in, onboarding, payroll and more.',
   },
+  '/blog': {
+    title: 'Blog — Workard',
+    description: 'Practical guides on HR, payroll, attendance, sales and running a growing business in Nigeria — from the Workard team.',
+  },
+  '/privacy': {
+    title: 'Privacy Policy — Workard',
+    description:
+      'How Workard collects, uses, shares and protects personal information, and the rights of business owners, employees and customers under the Nigeria Data Protection Act 2023.',
+  },
   '/forgot-password': {
     title: 'Reset your password — Workard',
     description: 'Reset your Workard password.',
@@ -54,6 +63,7 @@ const APP_TITLES = {
   '/announcements': 'Announcements',
   '/performance': 'Team performance',
   '/feedback': 'Feedback', // the private follow-up link for anonymous feedback
+  '/admin': 'Workard admin',
 };
 
 export const notFound = {
@@ -67,13 +77,26 @@ function appMeta(pathname) {
   return prefix ? { title: `${APP_TITLES[prefix]} — Workard`, description: 'Workard', noindex: true } : null;
 }
 
+// Pages whose tags depend on data (a blog post): set by the page itself, and by the
+// prerender script before building that page.
+const overrides = {};
+export function setSeoOverride(pathname, meta) {
+  overrides[pathname] = meta;
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('workard:seo'));
+}
+
+// A blog post before its data arrives
+const blogPostFallback = { title: 'Blog — Workard', description: pages['/blog']?.description || '' };
+
 export function getSeo(rawPathname) {
   const pathname = rawPathname.replace(/\/$/, '') || '/'; // "/login/" → "/login"
-  const meta = pages[pathname] || appMeta(pathname) || notFound;
+  const meta =
+    overrides[pathname] || pages[pathname] || (pathname.startsWith('/blog/') ? blogPostFallback : null) || appMeta(pathname) || notFound;
+  const image = meta.image ? (/^https?:/.test(meta.image) ? meta.image : `${SITE_URL}${meta.image}`) : `${SITE_URL}${DEFAULT_IMAGE}`;
   return {
     ...meta,
     canonical: `${SITE_URL}${pathname === '/' ? '' : pathname}`,
-    image: `${SITE_URL}${DEFAULT_IMAGE}`,
+    image,
   };
 }
 
@@ -109,7 +132,7 @@ export function renderHeadTags(pathname, faq) {
     s.keywords ? `<meta name="keywords" content="${esc(s.keywords)}" />` : '',
     `<meta name="robots" content="${s.noindex ? 'noindex, nofollow' : 'index, follow'}" />`,
     `<link rel="canonical" href="${s.canonical}" />`,
-    `<meta property="og:type" content="website" />`,
+    `<meta property="og:type" content="${s.type || 'website'}" />`,
     `<meta property="og:site_name" content="${SITE_NAME}" />`,
     `<meta property="og:title" content="${esc(s.title)}" />`,
     `<meta property="og:description" content="${esc(s.description)}" />`,
@@ -138,5 +161,6 @@ export function renderHeadTags(pathname, faq) {
       `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`
     );
   }
+  if (s.jsonLd) tags.push(`<script type="application/ld+json">${JSON.stringify(s.jsonLd).replace(/</g, '\\u003c')}</script>`);
   return tags.filter(Boolean).join('\n    ');
 }

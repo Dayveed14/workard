@@ -645,3 +645,26 @@ select.field__input {
     background: #fff;
   }
 }
+
+/* ---------- Suspended by Workard ---------- */
+.suspended {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px 16px;
+  background: var(--surface);
+}
+
+.suspended__card {
+  max-width: 460px;
+  padding: 36px 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.suspended__card svg {
+  color: var(--danger);
+}

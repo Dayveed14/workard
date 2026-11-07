@@ -5,6 +5,9 @@ import ProtectedRoute, { GuestRoute, RequireFeature, RequirePermission } from '.
 import AppLayout from './components/AppLayout.jsx';
 
 // Public pages
+import Privacy from './pages/Privacy.jsx';
+import Blog from './pages/Blog.jsx';
+import BlogPost from './pages/BlogPost.jsx';
 import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -52,6 +55,7 @@ import OnboardingDetail from './pages/app/onboarding/OnboardingDetail.jsx';
 
 // The video room loads LiveKit (large) only when someone joins a meeting
 const MeetingRoom = lazy(() => import('./pages/app/meetings/MeetingRoom.jsx'));
+const AdminApp = lazy(() => import('./pages/admin/AdminApp.jsx'));
 
 export default function App() {
   useSeo();
@@ -60,6 +64,11 @@ export default function App() {
     <Routes>
       {/* Public */}
       <Route path="/" element={<Home />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:slug" element={<BlogPost />} />
+      {/* Workard super admins — its own log-in and its own code bundle */}
+      <Route path="/admin/*" element={<Suspense fallback={<div className="page-loader"><span className="page-loader__spinner" /></div>}><AdminApp /></Suspense>} />
       <Route path="/invite/:token" element={<AcceptInvite />} />
       <Route path="/i/:token" element={<PublicInvoice />} />
       <Route element={<GuestRoute />}>

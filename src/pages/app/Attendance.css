@@ -23,6 +23,9 @@
 }
 
 .att__chip {
+  border: 1.5px solid transparent;
+  font-family: inherit;
+  cursor: pointer;
   padding: 5px 12px;
   border-radius: 999px;
   font-size: 0.85rem;
@@ -274,4 +277,37 @@
   .att-month__legend-note {
     margin-left: 0;
   }
+}
+
+/* Status chips on the register filter the list (click again for everyone) */
+.att__chip:hover {
+  filter: brightness(0.96);
+}
+
+.att__chip.is-on {
+  border-color: currentColor;
+}
+
+.att__toolbar .dt-search {
+  margin-left: auto;
+}
+
+.att-month__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 16px 20px 0;
+}
+
+.att-month__order {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+}
+
+.att-month__order .field__input {
+  width: auto;
+  height: 42px;
 }
