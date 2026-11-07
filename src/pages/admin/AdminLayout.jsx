@@ -51,7 +51,7 @@ export default function AdminLayout() {
     <div className={`app admin ${menuOpen ? 'app--menu-open' : ''}`}>
       <aside className="sidebar" aria-label="Admin navigation">
         <div className="sidebar__brand">
-          <Link to="/admin" className="admin__brand">
+          <Link to="/" className="admin__brand">
             <Logo variant="light" size={24} />
             <span className="admin__badge">Admin</span>
           </Link>
