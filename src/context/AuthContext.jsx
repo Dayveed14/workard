@@ -18,6 +18,13 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let active = true;
+    // The super admin area (/admin) has its own log-in — don't ask about a company session there
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) {
+      setStatus('guest');
+      return () => {
+        active = false;
+      };
+    }
     api('/api/auth/me')
       .then((s) => active && signIn(s))
       .catch((err) => active && setStatus(err.status === 423 ? 'suspended' : 'guest'));
