@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Ban, Check, Paperclip, Pencil, Play, Plus, RotateCcw, Send, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Ban, Check, Paperclip, Pencil, Play, Plus, RotateCcw, Trash2, X } from 'lucide-react';
 import Badge from '../../../components/Badge.jsx';
 import Avatar from '../../../components/Avatar.jsx';
 import EmptyState from '../../../components/EmptyState.jsx';
 import TaskModal from '../../../components/TaskModal.jsx';
+import CommentBox, { CommentText } from './CommentBox.jsx';
 import { api } from '../../../api/client.js';
 import { useApi } from '../../../hooks/useApi.js';
 import { useToast } from '../../../context/ToastContext.jsx';
@@ -18,7 +19,6 @@ export default function TaskDetail() {
   const { data: task, loading, error, setData, reload } = useApi(`/api/tasks/${id}`);
   const [editing, setEditing] = useState(false);
   const [newItem, setNewItem] = useState('');
-  const [comment, setComment] = useState('');
   const [busy, setBusy] = useState(false);
   const fileInput = useRef(null);
 
@@ -69,15 +69,11 @@ export default function TaskDetail() {
     if (ok) setNewItem('');
   };
 
-  const addComment = async (e) => {
-    e.preventDefault();
-    if (!comment.trim()) return;
-    const ok = await run(
-      () => api(`/api/tasks/${id}/comments`, { method: 'POST', body: { body: comment.trim() } }),
+  const addComment = ({ body, mentionUserIds }) =>
+    run(
+      () => api(`/api/tasks/${id}/comments`, { method: 'POST', body: { body, mentionUserIds } }),
       (t, comments) => ({ ...t, comments })
     );
-    if (ok) setComment('');
-  };
 
   const upload = async (e) => {
     const file = e.target.files[0];
@@ -192,15 +188,12 @@ export default function TaskDetail() {
                   <Avatar name={c.author_name || '?'} size={30} />
                   <div>
                     <p><strong>{c.author_name || 'Someone'}</strong> <span className="muted">{formatDateTime(c.created_at)}</span></p>
-                    <p className="task-detail__comment-body">{c.body}</p>
+                    <p className="task-detail__comment-body"><CommentText comment={c} people={task.mentionable || []} /></p>
                   </div>
                 </li>
               ))}
             </ul>
-            <form className="task-detail__add task-detail__add--comment" onSubmit={addComment}>
-              <textarea className="field__input" rows={2} placeholder="Write a comment" value={comment} onChange={(e) => setComment(e.target.value)} aria-label="Comment" />
-              <button type="submit" className="btn btn--primary btn--sm" disabled={!comment.trim() || busy}><Send size={16} /> Post</button>
-            </form>
+            <CommentBox people={task.mentionable || []} busy={busy} onPost={addComment} />
           </section>
         </div>
 

@@ -119,6 +119,21 @@
   font-size: 0.85rem;
 }
 
+/* offboarding: the person leaving writes a note for this item */
+.ob-editor__row--note {
+  grid-template-columns: 1fr 110px auto 36px;
+}
+
+.ob-editor__note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
 /* ===== One person's onboarding ===== */
 .ob-detail__bar {
   margin-bottom: 14px;
@@ -269,5 +284,9 @@
 
   .ob-editor__row {
     grid-template-columns: 1fr 90px 36px;
+  }
+
+  .ob-editor__row--note {
+    grid-template-columns: 1fr 90px auto 36px;
   }
 }

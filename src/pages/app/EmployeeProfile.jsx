@@ -13,6 +13,8 @@ import LeaveBalances from '../../components/LeaveBalances.jsx';
 import EmployeePayTab from './payroll/EmployeePayTab.jsx';
 import TaskList from '../../components/TaskList.jsx';
 import TaskModal from '../../components/TaskModal.jsx';
+import ExitModal from './offboarding/ExitModal.jsx';
+import './offboarding/Offboarding.css';
 import { api } from '../../api/client.js';
 import { useApi } from '../../hooks/useApi.js';
 import { useAuth } from '../../context/AuthContext.jsx';
@@ -408,24 +410,7 @@ export default function EmployeeProfile() {
       )}
 
       {modal === 'exit' && (
-        <Modal
-          title={`Exit ${fullName(e)}?`}
-          size="sm"
-          onClose={() => setModal(null)}
-          footer={
-            <>
-              <button type="button" className="btn btn--ghost" onClick={() => setModal(null)}>Cancel</button>
-              <button type="button" className="btn btn--danger" disabled={busy} onClick={() => run(() => api(`/api/employees/${id}/exit`, { method: 'POST', body: {} }), 'Employee exited')}>
-                Exit employee
-              </button>
-            </>
-          }
-        >
-          <p className="profile__modal-text">
-            Their records (attendance, leave, documents) are kept, but they will no longer be able to log in and won’t
-            appear in daily attendance.
-          </p>
-        </Modal>
+        <ExitModal employee={e} onClose={() => setModal(null)} onExitedNow={() => { setModal(null); reload(); }} />
       )}
     </>
   );

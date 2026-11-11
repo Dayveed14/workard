@@ -135,3 +135,17 @@
 .bell__text .bell__body {
   font-size: 0.8rem;
 }
+
+/* Phones: the bell isn't at the very right edge (the user menu sits after it), so a panel
+   anchored to the bell ran off the left of the screen. Pin it to the screen instead. */
+@media (max-width: 640px) {
+  .bell__panel {
+    position: fixed;
+    top: 64px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+    max-height: calc(100vh - 80px);
+  }
+}

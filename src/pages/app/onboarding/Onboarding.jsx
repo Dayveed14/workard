@@ -15,7 +15,7 @@ import { useToast } from '../../../context/ToastContext.jsx';
 import { formatDate, todayString } from '../../../utils/format.js';
 import './Onboarding.css';
 
-export const SUITS_LABELS = { everyone: 'Everyone', staff: 'Staff', managers: 'Managers' };
+export const SUITS_LABELS = { everyone: 'Everyone', staff: 'Staff', managers: 'Managers', resignation: 'Resignations', termination: '24-hour exits' };
 
 export function Progress({ done, total }) {
   const pct = total ? Math.round((done / total) * 100) : 0;
@@ -147,12 +147,14 @@ function OnboardingList({ status }) {
   );
 }
 
-function Checklists({ templates, reload }) {
+// The reusable checklists — onboarding ones here, offboarding ones on the Offboarding page
+export function Checklists({ templates, reload, kind = 'onboarding' }) {
+  const leaving = kind === 'offboarding';
   const toast = useToast();
   const [editing, setEditing] = useState(null); // { id } | { id: null }
 
   const remove = async (t) => {
-    if (!window.confirm(`Delete the "${t.name}" checklist? Onboardings already sent keep their items.`)) return;
+    if (!window.confirm(`Delete the "${t.name}" checklist? Checklists already sent keep their items.`)) return;
     try {
       await api(`/api/onboarding/templates/${t.id}`, { method: 'DELETE' });
       toast.success('Checklist deleted');
@@ -165,7 +167,11 @@ function Checklists({ templates, reload }) {
   return (
     <>
       <div className="toolbar ob-toolbar">
-        <p className="muted">Each checklist has steps for the <strong>new joiner</strong> and steps for <strong>HR / the owner</strong>. Make one per type of role.</p>
+        <p className="muted">
+          {leaving
+            ? <>Each checklist has steps for the <strong>person leaving</strong> (handover note, documents, company assets) and steps for <strong>HR / the owner</strong>.</>
+            : <>Each checklist has steps for the <strong>new joiner</strong> and steps for <strong>HR / the owner</strong>. Make one per type of role.</>}
+        </p>
         <button type="button" className="btn btn--primary" onClick={() => setEditing({ id: null })}><Plus size={18} /> New checklist</button>
       </div>
       <div className="ob-templates">
@@ -173,11 +179,11 @@ function Checklists({ templates, reload }) {
           <article key={t.id} className="card card__body ob-template">
             <header>
               <h3>{t.name}</h3>
-              <Badge tone={t.suits === 'managers' ? 'blue' : 'gray'}>{SUITS_LABELS[t.suits]}</Badge>
+              <Badge tone={['managers', 'termination'].includes(t.suits) ? 'blue' : 'gray'}>{SUITS_LABELS[t.suits]}</Badge>
             </header>
             {t.description && <p className="muted">{t.description}</p>}
             <p className="ob-template__counts">
-              <span><strong>{t.joiner_items}</strong> for the new joiner</span>
+              <span><strong>{t.joiner_items}</strong> for {leaving ? 'the person leaving' : 'the new joiner'}</span>
               <span><strong>{t.hr_items}</strong> for HR</span>
             </p>
             <div className="row-actions">
@@ -187,7 +193,7 @@ function Checklists({ templates, reload }) {
           </article>
         ))}
       </div>
-      {editing && <ChecklistEditor templateId={editing.id} onClose={() => setEditing(null)} onSaved={reload} />}
+      {editing && <ChecklistEditor templateId={editing.id} kind={kind} onClose={() => setEditing(null)} onSaved={reload} />}
     </>
   );
 }

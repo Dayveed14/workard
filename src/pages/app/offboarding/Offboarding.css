@@ -1,0 +1,140 @@
+.off-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.off-notice .field__input {
+  width: 76px;
+  height: 38px;
+}
+
+.off-left,
+.off-overdue {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.off-overdue {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.off-reason {
+  margin: -6px 0 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.off-send {
+  margin-bottom: 16px;
+}
+
+.off-send h2 {
+  margin-bottom: 4px;
+}
+
+.off-send__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.off-send__row .field__input {
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+
+.off-note {
+  display: block;
+  margin: 6px 0 2px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--blue);
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.85rem;
+  white-space: pre-line;
+  color: var(--text);
+}
+
+.off-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* Requests → Resignation */
+.off-mine {
+  display: grid;
+  gap: 12px;
+  max-width: 640px;
+}
+
+.off-mine__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.off-mine__head > svg {
+  flex: none;
+  margin-top: 4px;
+  color: var(--blue);
+}
+
+.off-mine__head > div {
+  flex: 1;
+}
+
+.off-mine__steps {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.off-mine__open {
+  justify-self: start;
+}
+
+/* Employee profile → Exit */
+.off-choices {
+  display: grid;
+  gap: 8px;
+}
+
+.off-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--gray);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.off-choice.is-on {
+  border-color: var(--blue);
+  background: var(--surface);
+}
+
+.off-choice input {
+  margin-top: 4px;
+}
+
+.off-choice span {
+  display: grid;
+  gap: 2px;
+}
+
+.off-choice small {
+  color: var(--muted);
+}

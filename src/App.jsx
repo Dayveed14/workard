@@ -52,6 +52,8 @@ import Billing from './pages/app/billing/Billing.jsx';
 import BillingCallback from './pages/app/billing/BillingCallback.jsx';
 import Onboarding from './pages/app/onboarding/Onboarding.jsx';
 import OnboardingDetail from './pages/app/onboarding/OnboardingDetail.jsx';
+import Offboarding from './pages/app/offboarding/Offboarding.jsx';
+import OffboardingDetail from './pages/app/offboarding/OffboardingDetail.jsx';
 
 // The video room loads LiveKit (large) only when someone joins a meeting
 const MeetingRoom = lazy(() => import('./pages/app/meetings/MeetingRoom.jsx'));
@@ -126,6 +128,8 @@ export default function App() {
           <Route path="/billing/callback" element={<BillingCallback />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/onboarding/:id" element={<OnboardingDetail />} />
+          <Route path="/offboarding" element={<Offboarding />} />
+          <Route path="/offboarding/:id" element={<OffboardingDetail />} />
 
           {/* Phase 3B — everyone has their own tasks & reviews; access is checked by the API */}
           <Route path="/tasks" element={<RequireFeature feature="tasks"><Tasks /></RequireFeature>} />

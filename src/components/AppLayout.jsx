@@ -28,8 +28,7 @@ import {
   Wallet,
   X,
   Contact,
-  Eye,
-} from 'lucide-react';
+  Eye, DoorOpen } from 'lucide-react';
 import Logo from './Logo.jsx';
 import NotificationBell from './NotificationBell.jsx';
 import Avatar from './Avatar.jsx';
@@ -59,6 +58,7 @@ const NAV = [
   { to: '/employees', label: 'Employees', icon: Users, anyOf: ['employees.view'] },
   { to: '/performance', label: 'Team performance', icon: BarChart3, anyOf: ['reviews.view'], feature: 'reviews' },
   { to: '/onboarding', label: 'Onboarding', icon: UserPlus, anyOf: ['onboarding.manage'] },
+  { to: '/offboarding', label: 'Offboarding', icon: DoorOpen, anyOf: ['onboarding.manage'] },
   { to: '/invoices', label: 'Invoices', icon: FileText, anyOf: ['invoices.view'], feature: 'invoices' },
   { to: '/finance', label: 'Finance', icon: Wallet, anyOf: ['finance.view'], feature: 'finance' },
   { to: '/payroll', label: 'Payroll', icon: Banknote, anyOf: ['payroll.view'], feature: 'payroll' },
