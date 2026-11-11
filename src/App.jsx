@@ -54,6 +54,9 @@ import Onboarding from './pages/app/onboarding/Onboarding.jsx';
 import OnboardingDetail from './pages/app/onboarding/OnboardingDetail.jsx';
 import Offboarding from './pages/app/offboarding/Offboarding.jsx';
 import OffboardingDetail from './pages/app/offboarding/OffboardingDetail.jsx';
+import Mail from './pages/app/mail/Mail.jsx';
+import MailThread from './pages/app/mail/MailThread.jsx';
+import SentEmail from './pages/app/mail/SentEmail.jsx';
 
 // The video room loads LiveKit (large) only when someone joins a meeting
 const MeetingRoom = lazy(() => import('./pages/app/meetings/MeetingRoom.jsx'));
@@ -130,6 +133,11 @@ export default function App() {
           <Route path="/onboarding/:id" element={<OnboardingDetail />} />
           <Route path="/offboarding" element={<Offboarding />} />
           <Route path="/offboarding/:id" element={<OffboardingDetail />} />
+
+          {/* Mail: send from your own Gmail / Outlook, inbox where allowed */}
+          <Route path="/mail" element={<RequireFeature feature="mail"><Mail /></RequireFeature>} />
+          <Route path="/mail/thread/:threadId" element={<RequireFeature feature="mail"><MailThread /></RequireFeature>} />
+          <Route path="/mail/sent/:id" element={<RequireFeature feature="mail"><SentEmail /></RequireFeature>} />
 
           {/* Phase 3B — everyone has their own tasks & reviews; access is checked by the API */}
           <Route path="/tasks" element={<RequireFeature feature="tasks"><Tasks /></RequireFeature>} />

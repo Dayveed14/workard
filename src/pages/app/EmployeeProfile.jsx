@@ -14,6 +14,8 @@ import EmployeePayTab from './payroll/EmployeePayTab.jsx';
 import TaskList from '../../components/TaskList.jsx';
 import TaskModal from '../../components/TaskModal.jsx';
 import ExitModal from './offboarding/ExitModal.jsx';
+import ComposeModal from '../../components/mail/ComposeModal.jsx';
+import SentEmailList from '../../components/mail/SentEmailList.jsx';
 import './offboarding/Offboarding.css';
 import { api } from '../../api/client.js';
 import { useApi } from '../../hooks/useApi.js';
@@ -251,7 +253,8 @@ export default function EmployeeProfile() {
   const { data: structure } = useApi(auth.can('roles.manage') || auth.can('employees.create') ? '/api/organization/structure' : null);
   const [params] = useSearchParams();
   const [tab, setTab] = useState(params.get('tab') || 'overview');
-  const [modal, setModal] = useState(null); // 'invite' | 'role' | 'exit'
+  const [modal, setModal] = useState(null); // 'invite' | 'role' | 'exit' | 'email'
+  const [emailsKey, setEmailsKey] = useState(0); // refresh the Emails tab after sending
   const [roleId, setRoleId] = useState('');
   const [busy, setBusy] = useState(false);
   const photoInput = useRef(null);
@@ -305,6 +308,7 @@ export default function EmployeeProfile() {
   if (has('tasks') && (isSelf || isManager || auth.can('tasks.view'))) tabs.push({ id: 'tasks', label: 'Tasks' });
   if (has('reviews') && (isSelf || isManager || auth.canAny('reviews.view', 'reviews.manage'))) tabs.push({ id: 'reviews', label: 'Reviews' });
   if (has('payroll') && auth.can('payroll.view')) tabs.push({ id: 'pay', label: 'Pay' });
+  if (has('mail')) tabs.push({ id: 'emails', label: 'Emails' }); // only emails YOU sent or received show
 
   return (
     <>
@@ -339,6 +343,11 @@ export default function EmployeeProfile() {
         </div>
 
         <div className="profile__actions">
+          {has('mail') && active && e.email && !isSelf && (
+            <button type="button" className="btn btn--outline btn--sm" onClick={() => setModal('email')}>
+              <Mail size={16} /> Email
+            </button>
+          )}
           {auth.can('onboarding.manage') && active && !isSelf && (
             <Link to={`/onboarding?start=${e.id}`} className="btn btn--outline btn--sm">
               <UserPlus size={16} /> Start onboarding
@@ -375,6 +384,18 @@ export default function EmployeeProfile() {
       {tab === 'reviews' && <ReviewsTab id={id} />}
       {tab === 'pay' && has('payroll') && auth.can('payroll.view') && <EmployeePayTab employeeId={id} />}
       {tab === 'documents' && <DocumentsTab id={id} canManage={auth.can('documents.manage') && active} />}
+      {tab === 'emails' && (
+        <div className="card"><SentEmailList key={emailsKey} employeeId={id} emptyText={`Emails between you and ${e.first_name} sent from Workard show here.`} /></div>
+      )}
+      {modal === 'email' && (
+        <ComposeModal
+          title={`Email ${e.first_name}`}
+          initial={{ to: [{ email: e.email, name: `${e.first_name} ${e.last_name}` }] }}
+          links={{ employeeId: e.id }}
+          onClose={() => setModal(null)}
+          onSent={() => { setEmailsKey((k) => k + 1); setTab('emails'); }}
+        />
+      )}
 
       {(modal === 'invite' || modal === 'role') && (
         <Modal

@@ -8,6 +8,8 @@ import EmptyState from '../../../components/EmptyState.jsx';
 import CustomerModal from '../../../components/CustomerModal.jsx';
 import TaskList from '../../../components/TaskList.jsx';
 import TaskModal from '../../../components/TaskModal.jsx';
+import ComposeModal from '../../../components/mail/ComposeModal.jsx';
+import SentEmailList from '../../../components/mail/SentEmailList.jsx';
 import { api } from '../../../api/client.js';
 import { useApi } from '../../../hooks/useApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
@@ -231,10 +233,13 @@ function CustomerTasks({ customerId }) {
 
 export default function CustomerProfile() {
   const { id } = useParams();
-  const { can } = useAuth();
+  const { can, subscription } = useAuth();
   const { data: c, setData, loading, error, reload } = useApi(`/api/customers/${id}`);
   const [tab, setTab] = useState('activity');
   const [editing, setEditing] = useState(false);
+  const [emailing, setEmailing] = useState(false);
+  const [emailsKey, setEmailsKey] = useState(0); // refresh the Emails tab after sending
+  const hasMail = subscription?.features.includes('mail');
 
   if (loading) return <div className="page-loader"><span className="page-loader__spinner" /></div>;
   if (error) return <EmptyState title="Customer not available" text={error} action={<Link to="/customers" className="btn btn--outline">Back to customers</Link>} />;
@@ -243,6 +248,7 @@ export default function CustomerProfile() {
     { id: 'activity', label: 'Activity' },
     { id: 'tasks', label: 'Tasks' },
     ...(can('invoices.view') ? [{ id: 'invoices', label: 'Invoices' }, { id: 'payments', label: 'Payments' }] : []),
+    ...(hasMail ? [{ id: 'emails', label: 'Emails' }] : []),
   ];
 
   return (
@@ -286,6 +292,9 @@ export default function CustomerProfile() {
         </div>
 
         <div className="cprofile__actions">
+          {hasMail && c.email && (
+            <button type="button" className="btn btn--outline btn--sm" onClick={() => setEmailing(true)}><Mail size={16} /> Email</button>
+          )}
           {can('customers.manage') && (
             <button type="button" className="btn btn--outline btn--sm" onClick={() => setEditing(true)}><Pencil size={16} /> Edit</button>
           )}
@@ -302,8 +311,20 @@ export default function CustomerProfile() {
       {tab === 'tasks' && <CustomerTasks customerId={id} />}
       {tab === 'invoices' && <CustomerInvoices customerId={id} />}
       {tab === 'payments' && <CustomerPayments customerId={id} />}
+      {tab === 'emails' && (
+        <div className="card"><SentEmailList key={emailsKey} customerId={id} emptyText="Emails sent to this customer from Workard show here — only to the people who sent or received them." /></div>
+      )}
 
       {editing && <CustomerModal customer={c} onClose={() => setEditing(false)} onSaved={reload} />}
+      {emailing && (
+        <ComposeModal
+          title={`Email ${c.name}`}
+          initial={{ to: [{ email: c.email, name: c.contact_person || c.name }] }}
+          links={{ customerId: c.id }}
+          onClose={() => setEmailing(false)}
+          onSent={() => { setEmailsKey((k) => k + 1); setTab('emails'); }}
+        />
+      )}
     </>
   );
 }

@@ -5,6 +5,7 @@ import InvoiceDocument from '../../../components/InvoiceDocument.jsx';
 import Modal from '../../../components/Modal.jsx';
 import Field from '../../../components/Field.jsx';
 import EmptyState from '../../../components/EmptyState.jsx';
+import ComposeModal from '../../../components/mail/ComposeModal.jsx';
 import { api } from '../../../api/client.js';
 import { useApi } from '../../../hooks/useApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
@@ -12,9 +13,22 @@ import { useToast } from '../../../context/ToastContext.jsx';
 import { PAYMENT_METHODS, formatDate, formatDateTime, formatMoney, newRequestId, todayString } from '../../../utils/format.js';
 import './InvoiceDetail.css';
 
-function SendModal({ invoice, onClose, onSent }) {
+function SendModal({ invoice, onClose, onSent, onMyEmail }) {
   const toast = useToast();
+  const { subscription } = useAuth();
   const [busy, setBusy] = useState('');
+  const hasMail = subscription?.features.includes('mail');
+
+  // Mail: get a ready-to-edit email, then the composer opens (sent from the person's own Gmail/Outlook)
+  const fromMyEmail = async () => {
+    setBusy('mine');
+    try {
+      onMyEmail(await api(`/api/invoices/${invoice.id}/email-draft`));
+    } catch (err) {
+      toast.error(err.message);
+      setBusy('');
+    }
+  };
 
   const send = async (channel) => {
     setBusy(channel);
@@ -45,10 +59,19 @@ function SendModal({ invoice, onClose, onSent }) {
         {invoice.customer_name} will get a link to view the invoice online, see how to pay, and print or save it as a PDF.
       </p>
       <div className="inv-detail__send-options">
+        {hasMail && (
+          <button type="button" className="inv-detail__send-btn" onClick={fromMyEmail} disabled={!!busy}>
+            <Send size={20} />
+            <span>
+              <strong>Send from my email</strong>
+              <small>From your Gmail or Outlook — edit it first, and it’s saved on this invoice</small>
+            </span>
+          </button>
+        )}
         <button type="button" className="inv-detail__send-btn" onClick={() => send('email')} disabled={!!busy || !invoice.customer_email}>
           <Mail size={20} />
           <span>
-            <strong>Email it</strong>
+            <strong>Email it from Workard</strong>
             <small>{invoice.customer_email || 'This customer has no email address'}</small>
           </span>
         </button>
@@ -264,7 +287,16 @@ export default function InvoiceDetail() {
         </aside>
       </div>
 
-      {modal === 'send' && <SendModal invoice={invoice} onClose={() => setModal(null)} onSent={reload} />}
+      {modal === 'send' && <SendModal invoice={invoice} onClose={() => setModal(null)} onSent={reload} onMyEmail={(draft) => setModal({ draft })} />}
+      {modal?.draft && (
+        <ComposeModal
+          title={`Email ${invoice.invoice_number}`}
+          initial={{ to: modal.draft.to, subject: modal.draft.subject, html: modal.draft.html }}
+          links={{ invoiceId: modal.draft.invoiceId, customerId: modal.draft.customerId }}
+          onClose={() => setModal(null)}
+          onSent={reload}
+        />
+      )}
       {modal === 'pay' && <PaymentModal invoice={invoice} onClose={() => setModal(null)} onSaved={reload} />}
     </div>
   );

@@ -53,6 +53,7 @@ const APP_TITLES = {
   '/billing': 'Plan & billing',
   '/onboarding': 'Onboarding',
   '/offboarding': 'Offboarding',
+  '/mail': 'Mail',
   '/tasks': 'Tasks',
   '/reviews': 'Performance reviews',
   '/i': 'Invoice',

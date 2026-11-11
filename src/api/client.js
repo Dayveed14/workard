@@ -9,7 +9,7 @@
 // so the login cookie belongs to workard.com and works on iPhones/Safari too.
 // A localhost address is ignored in production builds (it can only be a leftover dev setting).
 const rawApiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
-const API_URL = import.meta.env.PROD && /localhost|127\.0\.0\.1/.test(rawApiUrl) ? '' : rawApiUrl;
+export const API_URL = import.meta.env.PROD && /localhost|127\.0\.0\.1/.test(rawApiUrl) ? '' : rawApiUrl;
 
 export class ApiError extends Error {
   constructor(message, status, errors, code) {

@@ -22,6 +22,7 @@ export const PLANS = [
       'Payroll with PAYE & pension',
       'Customers (CRM) & invoicing',
       'Income, expenses & profit reports',
+      'Send email from your Gmail or Outlook',
     ],
     featured: true,
   },
@@ -50,6 +51,7 @@ export const FEATURE_PLAN = {
   crm: 'business',
   invoices: 'business',
   finance: 'business',
+  mail: 'business',
   calls: 'enterprise',
 };
 
@@ -61,5 +63,6 @@ export const FEATURE_NAMES = {
   crm: 'Customers',
   invoices: 'Invoicing',
   finance: 'Finance',
+  mail: 'Email',
   calls: 'Cloud phone',
 };

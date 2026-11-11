@@ -28,7 +28,10 @@ import {
   Wallet,
   X,
   Contact,
-  Eye, DoorOpen } from 'lucide-react';
+  Eye,
+  DoorOpen,
+  Mail,
+} from 'lucide-react';
 import Logo from './Logo.jsx';
 import NotificationBell from './NotificationBell.jsx';
 import Avatar from './Avatar.jsx';
@@ -48,6 +51,7 @@ const NAV = [
   { to: '/payslips', label: 'My payslips', icon: Receipt, employeeOnly: true, feature: 'payroll' },
 
   { section: 'Work' },
+  { to: '/mail', label: 'Mail', icon: Mail, feature: 'mail' },
   { to: '/tasks', label: 'Tasks', icon: ListChecks, feature: 'tasks' },
   { to: '/projects', label: 'Projects', icon: FolderKanban, feature: 'tasks' },
   { to: '/resources', label: 'Team resources', icon: FolderOpen },
