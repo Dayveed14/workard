@@ -524,6 +524,10 @@
     flex-direction: column;
   }
 
+  .compose__row .field__input:first-child {
+    flex: none; /* stacked: keep the subject's full height */
+  }
+
   .compose__template {
     max-width: none;
   }

@@ -668,3 +668,15 @@ select.field__input {
 .suspended__card svg {
   color: var(--danger);
 }
+
+/* ---------- iPhone: no zoom when you tap a field ----------
+   iOS Safari zooms the page in on any field with text smaller than 16px, which pushes
+   buttons off the screen. On touch screens every field gets 16px text. */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea,
+  [contenteditable='true'] {
+    font-size: 16px !important;
+  }
+}

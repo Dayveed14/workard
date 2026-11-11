@@ -1,17 +1,22 @@
+/* The dark backdrop. Modal.jsx sets its top/height to the visible screen on phones
+   (keyboard and Safari toolbars excluded); inset: 0 is the fallback. */
 .modal {
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 16px;
   background: rgba(15, 23, 42, 0.5);
   animation: modal-fade 0.15s ease;
 }
 
+/* Header and footer stay put; only the body scrolls — so the buttons are always on screen */
 .modal__panel {
   width: 100%;
-  max-height: calc(100vh - 32px);
+  max-height: calc(100vh - 32px); /* older browsers */
+  max-height: 100%; /*               = the backdrop's height minus its padding */
   display: flex;
   flex-direction: column;
   background: #fff;
@@ -32,6 +37,7 @@
 }
 
 .modal__header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,16 +50,47 @@
 }
 
 .modal__body {
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 22px;
   overflow-y: auto;
+  overscroll-behavior: contain; /* scrolling the form doesn't drag the page behind it */
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal__footer {
+  flex-shrink: 0;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   padding: 16px 22px;
   border-top: 1px solid var(--gray);
+}
+
+/* Phones: medium and large windows become a full-screen sheet */
+@media (max-width: 640px) {
+  .modal {
+    padding: 8px;
+  }
+
+  .modal__panel--md,
+  .modal__panel--lg {
+    height: 100%;
+    max-width: none;
+  }
+
+  .modal__header {
+    padding: 14px 16px;
+  }
+
+  .modal__body {
+    padding: 16px;
+  }
+
+  .modal__footer {
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom)); /* clear of the iPhone home bar */
+  }
 }
 
 @keyframes modal-fade {
